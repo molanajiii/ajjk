@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PlayBeat Admin — Control Panel</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#04060d;--bg2:#070b15;--bg3:#0c1120;--bg4:#111828;--border:rgba(85,140,255,.1);--text:#eef2ff;--text2:#8899bb;--text3:#3d5a88;--accent:#7c6cff;--accent-glow:rgba(124,108,255,.15);--gold:#d4af37;--gold2:#f4d06f;--gold-glow:rgba(212,175,55,.12);--green:#22d68a;--green-bg:rgba(34,214,138,.1);--amber:#f5a623;--amber-bg:rgba(245,166,35,.1);--red:#ff5a5a;--red-bg:rgba(255,90,90,.1);--blue:#4fa0ff;--blue-bg:rgba(79,160,255,.1);--mono:'JetBrains Mono',monospace}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 30% 20%,rgba(124,108,255,.12),transparent 40%),radial-gradient(circle at 80% 80%,rgba(212,175,55,.08),transparent 35%),#04060d;display:flex;align-items:center;justify-content:center}
+.login-card{width:400px;max-width:94vw;background:linear-gradient(160deg,#080e1c,#0d1626);border:1px solid rgba(212,175,55,.3);border-radius:20px;padding:36px 32px;box-shadow:0 0 60px rgba(212,175,55,.1),0 40px 80px rgba(0,0,0,.6);text-align:center}
+.login-logo{font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}.login-logo span{color:var(--gold)}
+.login-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:28px}
+.login-field{width:100%;padding:13px 16px;margin-bottom:12px;background:#060c18;border:1px solid rgba(212,175,55,.2);border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;outline:none}
+.login-field:focus{border-color:rgba(212,175,55,.5)}
+.login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(90deg,#8b6b14,#d4af37,#f4d06f);color:#020a00;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.5px;transition:filter .2s;margin-top:4px}
+.login-btn:hover{filter:brightness(1.1)}
+.login-err{color:var(--red);font-size:13px;margin-top:10px;display:none}
+.login-hint{margin-top:18px;font-size:12px;color:var(--text3);border-top:1px solid rgba(212,175,55,.1);padding-top:14px}
+/* SHELL */
+#shell{display:none;height:100vh;overflow:hidden;flex-direction:row}
+#shell.visible{display:flex}
+/* SIDEBAR */
+.sidebar{width:224px;flex-shrink:0;background:linear-gradient(180deg,#060c18,#0a1322);border-right:1px solid rgba(212,175,55,.12);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(212,175,55,.1)}
+.sb-logo-mark{display:flex;align-items:center;gap:9px;margin-bottom:1px}
+.sb-bolt{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-name{font-size:15px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(90deg,var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-sub{font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-left:37px}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-label{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;padding:12px 16px 4px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 12px;margin:1px 8px;font-size:13px;color:var(--text2);cursor:pointer;border-radius:8px;transition:all .15s;position:relative;border:1px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.sb-item.active{background:var(--gold-glow);color:var(--gold2);border-color:rgba(212,175,55,.15)}
+.sb-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--gold);border-radius:2px}
+.sb-item i{font-size:16px;width:18px;text-align:center}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700}
+.sb-footer{padding:12px 8px;border-top:1px solid rgba(212,175,55,.1)}
+.user-row{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:pointer}
+.user-row:hover{background:rgba(255,255,255,.04)}
+.avatar{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.u-name{font-size:13px;font-weight:500}.u-role{font-size:11px;color:var(--text3)}
+.dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pdot 2s infinite}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.3}}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+.conn-bar{padding:5px 22px;background:rgba(4,8,18,.9);border-bottom:1px solid rgba(212,175,55,.08);display:flex;align-items:center;gap:18px;font-size:11px;color:var(--text3);flex-shrink:0;flex-wrap:wrap}
+.cdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block}
+.cdot.g{background:var(--green)}.cdot.a{background:var(--amber);animation:pdot 1.5s infinite}.cdot.r{background:var(--red)}
+.topbar{padding:13px 22px;border-bottom:1px solid rgba(212,175,55,.1);display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#060c18,#070d1a);flex-shrink:0}
+.tb-title{font-size:16px;font-weight:600;flex:1;letter-spacing:-.2px;background:linear-gradient(90deg,var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-actions{display:flex;align-items:center;gap:8px}
+.content{flex:1;overflow-y:auto;padding:22px;scrollbar-width:thin;scrollbar-color:rgba(212,175,55,.15) transparent}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:rgba(212,175,55,.15);border-radius:4px}
+.section{display:none}.section.active{display:block}
+/* GRID */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+/* METRIC */
+.metric{background:linear-gradient(160deg,#080e1c,#0c1522);border:1px solid rgba(212,175,55,.12);border-radius:13px;padding:16px;position:relative;overflow:hidden}
+.metric::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:var(--gold-glow);pointer-events:none}
+.m-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.m-val{font-size:26px;font-weight:700;letter-spacing:-.5px;background:linear-gradient(90deg,var(--gold2),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.m-delta{font-size:11px;margin-top:4px}.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--text3)}
+/* CARD */
+.card{background:linear-gradient(160deg,#08111d,#0d1726);border:1px solid rgba(212,175,55,.12);border-radius:14px;padding:18px;margin-bottom:14px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--gold2)}.card-sub{font-size:12px;color:var(--text3)}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:7px 10px;font-size:11px;color:var(--text3);border-bottom:1px solid rgba(212,175,55,.1);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+td{padding:10px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(212,175,55,.03)}
+td.mono{font-family:var(--mono);font-size:12px;color:var(--text2)}
+/* PILLS */
+.pill{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.pg{background:var(--green-bg);color:var(--green)}.pa{background:var(--amber-bg);color:var(--amber)}
+.pr{background:var(--red-bg);color:var(--red)}.pb{background:var(--blue-bg);color:var(--blue)}
+.pac{background:var(--accent-glow);color:var(--accent)}.pgo{background:var(--gold-glow);color:var(--gold2)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:13px;border:1px solid rgba(212,175,55,.18);border-radius:8px;cursor:pointer;background:transparent;color:var(--text);transition:all .15s;font-family:inherit}
+.btn:hover{background:rgba(212,175,55,.06);border-color:rgba(212,175,55,.3)}
+.bp{background:linear-gradient(90deg,#8b6b14,#d4af37);border-color:transparent;color:#020a00;font-weight:700}
+.bp:hover{filter:brightness(1.1);background:linear-gradient(90deg,#8b6b14,#d4af37)}
+.bs{padding:4px 10px;font-size:12px}
+.bi{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:7px}
+.bd{border-color:rgba(255,90,90,.3);color:var(--red)}.bd:hover{background:var(--red-bg)}
+/* INPUTS */
+input[type=text],input[type=email],input[type=number],input[type=password],input[type=search],input[type=date],select,textarea{background:#060c18;border:1px solid rgba(212,175,55,.18);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.45);box-shadow:0 0 14px rgba(212,175,55,.08)}
+select option{background:#0a1220}
+textarea{resize:vertical;line-height:1.6}
+/* TOGGLE */
+.tgl{position:relative;width:38px;height:22px;flex-shrink:0;cursor:pointer}
+.tgl input{opacity:0;width:0;height:0}
+.tgl-sl{position:absolute;inset:0;border-radius:11px;background:var(--bg4);border:1px solid rgba(212,175,55,.2);transition:.2s;cursor:pointer}
+.tgl input:checked+.tgl-sl{background:var(--green);border-color:var(--green)}
+.tgl-sl::before{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.tgl input:checked+.tgl-sl::before{transform:translateX(16px)}
+/* BAR */
+.bt{background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden}
+.bf{height:100%;border-radius:4px;transition:width .4s}
+/* STOCK */
+.sk{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.sk-ok{background:var(--green-bg);color:var(--green)}.sk-lw{background:var(--amber-bg);color:var(--amber)}.sk-out{background:var(--red-bg);color:var(--red)}
+/* ALERT */
+.alert-bar{background:var(--amber-bg);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:13px;color:var(--amber)}
+/* MINI ROW */
+.mr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(212,175,55,.06);font-size:13px}
+.mr:last-child{border-bottom:none}
+/* CHANNEL CARD */
+.cc{border:1px solid rgba(212,175,55,.12);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;background:rgba(8,17,30,.6)}
+.cc-icon{width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid rgba(212,175,55,.12)}
+/* GATEWAY CARDS */
+.gw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.gw-card{background:linear-gradient(160deg,#080e1c,#0d1828);border:1px solid rgba(212,175,55,.2);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s}
+.gw-card:hover{border-color:rgba(212,175,55,.4)}.gw-off{opacity:.5;border-color:rgba(255,255,255,.06)!important}
+.gw-head{display:flex;align-items:center;gap:14px}
+.gw-logo{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid rgba(212,175,55,.15);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(255,255,255,.03))}
+.gw-name{font-size:15px;font-weight:700;color:var(--gold2)}.gw-reg{font-size:11px;color:var(--text3);margin-top:2px}
+.gw-sr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.25);border-radius:10px;border:1px solid rgba(212,175,55,.1)}
+.gw-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gw-stat{background:rgba(0,0,0,.2);border-radius:8px;padding:8px 12px;text-align:center}
+.gw-sv{font-size:16px;font-weight:700;color:var(--gold2)}.gw-sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.gw-note{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:7px}
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;align-items:center;justify-content:center}
+.mo.open{display:flex}
+.mo-box{background:linear-gradient(160deg,#080e1c,#0d1828);border:1px solid rgba(212,175,55,.25);border-radius:18px;padding:26px;width:min(560px,94vw);max-height:90vh;overflow-y:auto}
+.mo-box h3{font-size:16px;font-weight:700;color:var(--gold2);margin-bottom:20px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg label{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.fg input,.fg select,.fg textarea{width:100%}
+.mo-ft{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid rgba(212,175,55,.1)}
+/* CHART */
+.chart-bars{display:flex;align-items:flex-end;gap:5px;height:130px;padding-bottom:4px}
+.cbc{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.cb{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--gold),rgba(212,175,55,.4));transition:height .4s;min-height:4px;cursor:pointer;position:relative}
+.cb:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0d1828;border:1px solid rgba(212,175,55,.3);padding:4px 8px;border-radius:6px;font-size:11px;color:var(--gold2);white-space:nowrap;pointer-events:none}
+.cl{font-size:10px;color:var(--text3)}
+/* ENV ROW */
+.env-row{display:flex;justify-content:space-between;padding:7px 10px;background:rgba(0,0,0,.3);border-radius:8px;font-size:12px}
+/* RESPONSIVE */
+@media(max-width:900px){.sidebar{width:56px}.sb-name,.sb-sub,.sb-label,.u-name,.u-role,.sb-item span,.sb-badge{display:none}.sb-item{justify-content:center;padding:10px 0;margin:2px 6px}}
+@media(max-width:600px){.grid-4,.grid-3,.grid-2,.frow{grid-template-columns:1fr}.gw-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">play<span>beat</span></div>
+    <div class="login-sub">Admin Control Panel</div>
+    <input class="login-field" id="lg-u" type="text" placeholder="Username" autocomplete="username"/>
+    <input class="login-field" id="lg-p" type="password" placeholder="Password" autocomplete="current-password"/>
+    <button class="login-btn" onclick="doLogin()">Access Dashboard</button>
+    <div class="login-err" id="lg-err">Invalid credentials — try again</div>
+    <div class="login-hint">Default: admin / playbeat2026</div>
+  </div>
+</div>
+
+<!-- SHELL -->
+<div id="shell">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark"><div class="sb-bolt">⚡</div><span class="sb-name">PlayBeat</span></div>
+      <div class="sb-sub">Admin Console</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-label">Overview</div>
+      <div class="sb-item active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></div>
+      <div class="sb-label">Commerce</div>
+      <div class="sb-item" onclick="nav('inventory',this)"><i class="ti ti-package"></i><span>Inventory</span><span class="sb-badge" id="b-low">5</span></div>
+      <div class="sb-item" onclick="nav('orders',this)"><i class="ti ti-shopping-cart"></i><span>Orders</span><span class="sb-badge" id="b-ord">7</span></div>
+      <div class="sb-item" onclick="nav('products',this)"><i class="ti ti-box"></i><span>Products</span></div>
+      <div class="sb-item" onclick="nav('coupons',this)"><i class="ti ti-ticket"></i><span>Coupons</span></div>
+      <div class="sb-label">Finance</div>
+      <div class="sb-item" onclick="nav('payments',this)"><i class="ti ti-credit-card"></i><span>Payment Gateways</span></div>
+      <div class="sb-item" onclick="nav('analytics',this)"><i class="ti ti-chart-bar"></i><span>Analytics</span></div>
+      <div class="sb-label">Customers</div>
+      <div class="sb-item" onclick="nav('customers',this)"><i class="ti ti-users"></i><span>Customers</span></div>
+      <div class="sb-item" onclick="nav('support',this)"><i class="ti ti-headset"></i><span>Support</span></div>
+      <div class="sb-label">Content</div>
+      <div class="sb-item" onclick="nav('homepage',this)"><i class="ti ti-home-edit"></i><span>Homepage</span></div>
+      <div class="sb-item" onclick="nav('channels',this)"><i class="ti ti-broadcast"></i><span>Sales Channels</span></div>
+      <div class="sb-label">System</div>
+      <div class="sb-item" onclick="nav('roles',this)"><i class="ti ti-shield-lock"></i><span>Roles &amp; Auth</span></div>
+      <div class="sb-item" onclick="nav('api',this)"><i class="ti ti-api"></i><span>API Config</span></div>
+      <div class="sb-item" onclick="nav('settings',this)"><i class="ti ti-settings"></i><span>Settings</span></div>
+      <div class="sb-item" onclick="nav('prompt',this)"><i class="ti ti-terminal-2"></i><span>AI Prompt</span></div>
+    </nav>
+    <div class="sb-footer">
+      <div class="user-row">
+        <div class="avatar">PB</div>
+        <div style="flex:1;min-width:0"><div class="u-name">Admin</div><div class="u-role">Super Admin</div></div>
+        <div class="dot-live"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="conn-bar">
+      <span style="display:flex;align-items:center;gap:5px"><span class="cdot g" id="cd-api"></span>API: <span id="ct-api" style="color:var(--text2)">playbeat-backend.onrender.com</span></span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="cdot g" id="cd-db"></span>DB: <span style="color:var(--text2)">MongoDB Atlas</span></span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="cdot a" id="cd-str"></span>Stripe: <span style="color:var(--text2)">Sandbox · acct_1TMvCGG</span></span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="cdot g"></span>JazzCash: <span style="color:var(--text2)">Live</span></span>
+      <span style="display:flex;align-items:center;gap:5px"><span class="cdot g"></span>Alfalah: <span style="color:var(--text2)">Live</span></span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:5px"><i class="ti ti-clock" style="font-size:12px"></i><span id="ct-time"></span></span>
+      <button class="btn bs" onclick="doLogout()" style="padding:3px 10px;font-size:11px"><i class="ti ti-logout"></i> Logout</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section active">
+      <div class="topbar"><div class="tb-title">Dashboard</div><div class="tb-actions"><span class="pill pg">● Live</span><span id="dash-date" style="font-size:12px;color:var(--text3)"></span><button class="btn bs bp" onclick="refreshDash()"><i class="ti ti-refresh"></i> Refresh</button></div></div>
+      <div class="content">
+        <div class="alert-bar" id="dash-alert"><i class="ti ti-alert-triangle"></i><span id="dash-txt">Checking alerts…</span></div>
+        <div class="grid-4">
+          <div class="metric"><div class="m-label">Revenue (PKR)</div><div class="m-val">₨4.2L</div><div class="m-delta up">↑ 18% vs yesterday</div></div>
+          <div class="metric"><div class="m-label">Orders Today</div><div class="m-val">312</div><div class="m-delta up">↑ 24 new</div></div>
+          <div class="metric"><div class="m-label">Pending Delivery</div><div class="m-val" style="color:var(--amber)">7</div><div class="m-delta down">needs action</div></div>
+          <div class="metric"><div class="m-label">Low Stock Items</div><div class="m-val" style="color:var(--red)">5</div><div class="m-delta down">restock needed</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Recent Orders</span><button class="btn bs" onclick="nav('orders',document.querySelector('[onclick*=orders]'))">View all →</button></div>
+            <table><tr><th>Order</th><th>Product</th><th>Gateway</th><th>Status</th></tr>
+            <tr><td class="mono">#4821</td><td>ChatGPT Plus 1M</td><td>JazzCash</td><td><span class="pill pg">Delivered</span></td></tr>
+            <tr><td class="mono">#4820</td><td>Valorant Bundle</td><td>Stripe</td><td><span class="pill pg">Delivered</span></td></tr>
+            <tr><td class="mono">#4819</td><td>PS Plus 12M</td><td>Easypaisa</td><td><span class="pill pa">Pending</span></td></tr>
+            <tr><td class="mono">#4818</td><td>Adobe CC</td><td>Alfalah IBFT</td><td><span class="pill pg">Delivered</span></td></tr>
+            <tr><td class="mono">#4817</td><td>Midjourney</td><td>JazzCash</td><td><span class="pill pr">Failed</span></td></tr></table>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Payment Breakdown</span><span class="card-sub">Today</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">JazzCash</span><span>38%</span></div><div class="bt"><div class="bf" style="width:38%;background:var(--green)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">Easypaisa</span><span>27%</span></div><div class="bt"><div class="bf" style="width:27%;background:var(--blue)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">Stripe (Card)</span><span>21%</span></div><div class="bt"><div class="bf" style="width:21%;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">Bank Alfalah</span><span>9%</span></div><div class="bt"><div class="bf" style="width:9%;background:var(--amber)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="color:var(--text2)">Meezan IBAN</span><span>5%</span></div><div class="bt"><div class="bf" style="width:5%;background:var(--gold)"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Category Sales Today</span></div><div id="cat-sales" style="display:flex;flex-direction:column;gap:10px"></div></div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div id="inventory" class="section">
+      <div class="topbar"><div class="tb-title">Inventory</div><div class="tb-actions"><input type="search" placeholder="Search…" id="inv-q" oninput="filterInv()" style="width:180px"><button class="btn bs bp" onclick="openProdModal()"><i class="ti ti-plus"></i> Add Product</button></div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="metric"><div class="m-label">Total SKUs</div><div class="m-val">18</div></div>
+          <div class="metric"><div class="m-label">In Stock</div><div class="m-val" style="color:var(--green)">11</div></div>
+          <div class="metric"><div class="m-label">Low Stock</div><div class="m-val" style="color:var(--amber)">4</div></div>
+          <div class="metric"><div class="m-label">Out of Stock</div><div class="m-val" style="color:var(--red)">3</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Product Catalog</span><span class="card-sub" id="inv-cnt">9 products</span></div>
+          <table><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Sales</th><th>Delivery</th><th>Active</th><th></th></tr>
+          <tbody id="inv-tb">
+            <tr class="ir"><td style="font-weight:600">ChatGPT Plus 1M</td><td><span class="pill pb">AI Tools</span></td><td class="mono">₨5,500</td><td><span class="sk sk-ok">142 keys</span></td><td class="mono">1,248</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Valorant Bundle</td><td><span class="pill pac">Games</span></td><td class="mono">₨24,800</td><td><span class="sk sk-ok">88 codes</span></td><td class="mono">389</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">PS Plus 12M</td><td><span class="pill pb">Subscriptions</span></td><td class="mono">₨16,400</td><td><span class="sk sk-lw">9 keys ⚠</span></td><td class="mono">214</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Adobe CC All Apps</td><td><span class="pill pgo">Software</span></td><td class="mono">₨15,000</td><td><span class="sk sk-ok">55 licenses</span></td><td class="mono">612</td><td><span class="pill pa">Manual</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Midjourney Basic</td><td><span class="pill pb">AI Tools</span></td><td class="mono">₨2,800</td><td><span class="sk sk-lw">4 codes ⚠</span></td><td class="mono">930</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Xbox Game Pass 3M</td><td><span class="pill pac">Subscriptions</span></td><td class="mono">₨8,900</td><td><span class="sk sk-ok">200 keys</span></td><td class="mono">540</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Spotify Premium 1M</td><td><span class="pill pb">Subscriptions</span></td><td class="mono">₨1,200</td><td><span class="sk sk-ok">500 codes</span></td><td class="mono">2,108</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Steam Wallet $20</td><td><span class="pill pr">Gift Cards</span></td><td class="mono">₨6,200</td><td><span class="sk sk-out">Out of stock</span></td><td class="mono">310</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox"><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+            <tr class="ir"><td style="font-weight:600">Canva Pro 1Y</td><td><span class="pill pgo">Software</span></td><td class="mono">₨4,500</td><td><span class="sk sk-ok">78 keys</span></td><td class="mono">445</td><td><span class="pill pg">Instant</span></td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs" onclick="editInvRow(this)"><i class="ti ti-edit"></i></button> <button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="orders" class="section">
+      <div class="topbar"><div class="tb-title">Orders</div><div class="tb-actions">
+        <input type="search" id="ord-q" placeholder="Search…" oninput="filterOrd()" style="width:160px">
+        <select id="ord-st" onchange="filterOrd()" style="height:34px"><option value="">All statuses</option><option>Delivered</option><option>Pending</option><option>Failed</option><option>Refunded</option></select>
+        <select id="ord-gw" onchange="filterOrd()" style="height:34px"><option value="">All gateways</option><option>JazzCash</option><option>Easypaisa</option><option>Stripe</option><option>Alfalah IBFT</option><option>Meezan IBAN</option></select>
+        <button class="btn bs bp" onclick="toast('📥 Exporting…')"><i class="ti ti-download"></i> Export CSV</button>
+      </div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="metric"><div class="m-label">Total Orders</div><div class="m-val">4,821</div></div>
+          <div class="metric"><div class="m-label">Delivered</div><div class="m-val" style="color:var(--green)">4,788</div></div>
+          <div class="metric"><div class="m-label">Pending</div><div class="m-val" style="color:var(--amber)">26</div></div>
+          <div class="metric"><div class="m-label">Failed / Refunded</div><div class="m-val" style="color:var(--red)">7</div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Order Log</span><span class="card-sub" id="ord-cnt">7 orders</span></div>
+        <table><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Gateway</th><th>Status</th><th>Date</th><th></th></tr>
+        <tbody id="ord-tb">
+          <tr class="or" data-s="Delivered" data-g="JazzCash"><td class="mono">#4821</td><td>Ali Hassan</td><td>ChatGPT Plus 1M</td><td class="mono">₨5,500</td><td>JazzCash</td><td><span class="pill pg">Delivered</span></td><td class="mono" style="font-size:11px">Today 14:22</td><td><button class="btn bi bs" onclick="viewOrd('#4821')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Delivered" data-g="Stripe"><td class="mono">#4820</td><td>Zara Ahmed</td><td>Valorant Bundle</td><td class="mono">₨24,800</td><td>Stripe</td><td><span class="pill pg">Delivered</span></td><td class="mono" style="font-size:11px">Today 13:08</td><td><button class="btn bi bs" onclick="viewOrd('#4820')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Pending" data-g="Easypaisa"><td class="mono">#4819</td><td>Bilal Khan</td><td>PS Plus 12M</td><td class="mono">₨16,400</td><td>Easypaisa</td><td><span class="pill pa">Pending</span></td><td class="mono" style="font-size:11px">Today 12:55</td><td><button class="btn bi bs" onclick="viewOrd('#4819')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Delivered" data-g="Alfalah IBFT"><td class="mono">#4818</td><td>Sana Mir</td><td>Adobe CC</td><td class="mono">₨15,000</td><td>Alfalah IBFT</td><td><span class="pill pg">Delivered</span></td><td class="mono" style="font-size:11px">Today 11:30</td><td><button class="btn bi bs" onclick="viewOrd('#4818')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Failed" data-g="JazzCash"><td class="mono">#4817</td><td>Usman Raza</td><td>Midjourney Basic</td><td class="mono">₨2,800</td><td>JazzCash</td><td><span class="pill pr">Failed</span></td><td class="mono" style="font-size:11px">Today 10:14</td><td><button class="btn bi bs" onclick="viewOrd('#4817')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Delivered" data-g="JazzCash"><td class="mono">#4816</td><td>Hana Sheikh</td><td>Spotify 1M</td><td class="mono">₨1,200</td><td>JazzCash</td><td><span class="pill pg">Delivered</span></td><td class="mono" style="font-size:11px">Yesterday</td><td><button class="btn bi bs" onclick="viewOrd('#4816')"><i class="ti ti-eye"></i></button></td></tr>
+          <tr class="or" data-s="Refunded" data-g="Stripe"><td class="mono">#4815</td><td>Omar Tariq</td><td>Steam $20</td><td class="mono">₨6,200</td><td>Stripe</td><td><span class="pill pr">Refunded</span></td><td class="mono" style="font-size:11px">Yesterday</td><td><button class="btn bi bs" onclick="viewOrd('#4815')"><i class="ti ti-eye"></i></button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="products" class="section">
+      <div class="topbar"><div class="tb-title">Products</div><div class="tb-actions">
+        <input type="search" id="prd-q" placeholder="Search…" oninput="filterProd()" style="width:160px">
+        <select id="prd-cat" onchange="filterProd()" style="height:34px"><option value="">All categories</option><option>Games</option><option>Gift Cards</option><option>Software</option><option>AI Tools</option><option>Game Items</option><option>Accounts</option><option>Subscriptions</option><option>Top Up</option></select>
+        <button class="btn bs bp" onclick="openProdModal()"><i class="ti ti-plus"></i> New Product</button>
+      </div></div>
+      <div class="content">
+        <div class="card"><div class="card-hd"><span class="card-title">All Products</span><span class="card-sub" id="prd-cnt">—</span></div>
+        <table><tr><th>Name</th><th>Category</th><th>Price</th><th>Sale Price</th><th>Stock</th><th>Status</th><th>Delivery</th><th></th></tr><tbody id="prd-tb"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- COUPONS -->
+    <div id="coupons" class="section">
+      <div class="topbar"><div class="tb-title">Coupons &amp; Discounts</div><div class="tb-actions"><button class="btn bs bp" onclick="openCpnModal()"><i class="ti ti-plus"></i> New Coupon</button></div></div>
+      <div class="content">
+        <div class="card"><div class="card-hd"><span class="card-title">Active Coupons</span></div>
+        <table><tr><th>Code</th><th>Discount</th><th>Type</th><th>Used</th><th>Limit</th><th>Expires</th><th>Active</th><th></th></tr>
+        <tbody id="cpn-tb">
+          <tr><td class="mono" style="font-weight:700;color:var(--gold2)">SAVE20</td><td>20%</td><td><span class="pill pac">Percent</span></td><td>142</td><td>500</td><td class="mono">2026-12-31</td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+          <tr><td class="mono" style="font-weight:700;color:var(--gold2)">FLAT500</td><td>₨500</td><td><span class="pill pgo">Fixed</span></td><td>88</td><td>200</td><td class="mono">2026-06-30</td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+          <tr><td class="mono" style="font-weight:700;color:var(--gold2)">WELCOME10</td><td>10%</td><td><span class="pill pac">Percent</span></td><td>310</td><td>∞</td><td class="mono">No expiry</td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- PAYMENT GATEWAYS -->
+    <div id="payments" class="section">
+      <div class="topbar"><div class="tb-title">Payment Gateway Management</div><div class="tb-actions"><span class="pill pg">● All gateways operational</span><button class="btn bs" onclick="testGateways()"><i class="ti ti-activity-heartbeat"></i> Test All</button></div></div>
+      <div class="content">
+        <div style="background:rgba(79,160,255,.08);border:1px solid rgba(79,160,255,.25);border-radius:12px;padding:12px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--blue)">
+          <i class="ti ti-shield-check" style="font-size:18px;flex-shrink:0"></i>
+          <div><strong>Credentials stored server-side only.</strong> API keys, secrets, merchant passwords, and hash keys are loaded from environment variables on Render and are <em>never</em> exposed in this panel. Gateway logos, routing, and on/off toggles are managed here.</div>
+        </div>
+        <div class="grid-3" style="margin-bottom:18px">
+          <div class="metric"><div class="m-label">Success Rate</div><div class="m-val" style="color:var(--green)">96.4%</div><div class="m-delta up">↑ 1.2% this week</div></div>
+          <div class="metric"><div class="m-label">Avg Processing</div><div class="m-val">1.8s</div><div class="m-delta flat">JazzCash / Easypaisa</div></div>
+          <div class="metric"><div class="m-label">Pending Review</div><div class="m-val" style="color:var(--amber)">3</div><div class="m-delta down">Bank TXNs awaiting</div></div>
+        </div>
+
+        <!-- International -->
+        <div class="card">
+          <div class="card-hd"><span class="card-title">🌍 International Gateway</span></div>
+          <div class="gw-grid">
+            <div class="gw-card" id="gw-stripe">
+              <div class="gw-head">
+                <div class="gw-logo" style="background:linear-gradient(135deg,#6772e5,#4a56d5)">
+                  <svg width="26" height="26" viewBox="0 0 28 28"><rect width="28" height="28" rx="6" fill="#6772e5"/><path d="M13.4 9.8c0-.7.6-1 1.6-1 1.4 0 2.8.5 3.7 1V6.4c-1-.4-2-.6-3.7-.6-3.8 0-6.3 2-6.3 5.2 0 5.1 7 4.3 7 6.5 0 .8-.7 1.1-1.8 1.1-1.6 0-3.3-.6-4.6-1.5v3.5c1.5.7 3.1 1 4.6 1 3.9 0 6.6-1.9 6.6-5.3-.1-5.4-7.1-4.5-7.1-6.5z" fill="#fff"/></svg>
+                </div>
+                <div><div class="gw-name">Stripe</div><div class="gw-reg">🌍 Visa · Mastercard · Debit Cards</div></div>
+              </div>
+              <div class="gw-stats">
+                <div class="gw-stat"><div class="gw-sv">21%</div><div class="gw-sl">Volume Share</div></div>
+                <div class="gw-stat"><div class="gw-sv">98.1%</div><div class="gw-sl">Success Rate</div></div>
+              </div>
+              <div class="gw-sr">
+                <div><div style="font-size:13px;font-weight:600">Hosted Checkout Sessions</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Connected: acct_1TMvCGGTlnWXlnXp · Sandbox active · 3DS required</div></div>
+                <label class="tgl"><input type="checkbox" checked onchange="toggleGW('stripe',this)"><div class="tgl-sl"></div></label>
+              </div>
+              <div class="gw-note"><i class="ti ti-lock" style="font-size:14px;flex-shrink:0"></i>pk_test_*** / sk_test_*** / rk_test_*** — Render ENV — <strong style="color:var(--gold2)">Never shown here</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pakistan Local -->
+        <div class="card">
+          <div class="card-hd"><span class="card-title">🇵🇰 Pakistan — Local Gateways</span></div>
+          <div class="gw-grid">
+            <!-- JazzCash -->
+            <div class="gw-card" id="gw-jazz">
+              <div class="gw-head">
+                <div class="gw-logo" style="background:linear-gradient(135deg,#c62828,#e53935)">
+                  <span style="color:#fff;font-size:11px;font-weight:900;letter-spacing:-.5px;line-height:1.1;text-align:center">Jazz<br>Cash</span>
+                </div>
+                <div><div class="gw-name">JazzCash</div><div class="gw-reg">🇵🇰 Mobile Wallet · PLAYBEAT ARENA</div></div>
+              </div>
+              <div class="gw-stats">
+                <div class="gw-stat"><div class="gw-sv">38%</div><div class="gw-sl">Volume Share</div></div>
+                <div class="gw-stat"><div class="gw-sv">95.8%</div><div class="gw-sl">Success Rate</div></div>
+              </div>
+              <div class="gw-sr">
+                <div><div style="font-size:13px;font-weight:600">Mobile: 03318333368</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Auto-confirm via webhook · HMAC-SHA256 · Sandbox + Live</div></div>
+                <label class="tgl"><input type="checkbox" checked onchange="toggleGW('jazz',this)"><div class="tgl-sl"></div></label>
+              </div>
+              <div class="gw-note"><i class="ti ti-lock" style="font-size:14px;flex-shrink:0"></i>MerchantID / Password / HashKey — Render ENV — <strong style="color:var(--gold2)">Hidden</strong></div>
+            </div>
+            <!-- Easypaisa -->
+            <div class="gw-card" id="gw-easy">
+              <div class="gw-head">
+                <div class="gw-logo" style="background:linear-gradient(135deg,#2e7d32,#43a047)">
+                  <span style="color:#fff;font-size:10px;font-weight:900;letter-spacing:-.5px;line-height:1.1;text-align:center">Easy<br>paisa</span>
+                </div>
+                <div><div class="gw-name">Easypaisa</div><div class="gw-reg">🇵🇰 Telenor Wallet</div></div>
+              </div>
+              <div class="gw-stats">
+                <div class="gw-stat"><div class="gw-sv">27%</div><div class="gw-sl">Volume Share</div></div>
+                <div class="gw-stat"><div class="gw-sv">94.2%</div><div class="gw-sl">Success Rate</div></div>
+              </div>
+              <div class="gw-sr">
+                <div><div style="font-size:13px;font-weight:600">Mobile Wallet</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Manual + auto-confirm · Screenshot verify on IBFT</div></div>
+                <label class="tgl"><input type="checkbox" checked onchange="toggleGW('easy',this)"><div class="tgl-sl"></div></label>
+              </div>
+              <div class="gw-note"><i class="ti ti-lock" style="font-size:14px;flex-shrink:0"></i>Store ID / Hash Key — Render ENV — <strong style="color:var(--gold2)">Hidden</strong></div>
+            </div>
+            <!-- Bank Alfalah -->
+            <div class="gw-card" id="gw-alfa">
+              <div class="gw-head">
+                <div class="gw-logo" style="background:linear-gradient(135deg,#0d47a1,#1565c0)">
+                  <span style="color:#fff;font-size:9px;font-weight:900;line-height:1.2;text-align:center">Bank<br>Alfalah</span>
+                </div>
+                <div><div class="gw-name">Bank Alfalah</div><div class="gw-reg">🇵🇰 IBFT · AlfaPay API · Sandbox</div></div>
+              </div>
+              <div class="gw-stats">
+                <div class="gw-stat"><div class="gw-sv">9%</div><div class="gw-sl">Volume Share</div></div>
+                <div class="gw-stat"><div class="gw-sv">91.4%</div><div class="gw-sl">Success Rate</div></div>
+              </div>
+              <div class="gw-sr">
+                <div><div style="font-size:13px;font-weight:600">PLAYBEAT DIGITAL (PVT. LTD.)</div><div style="font-size:11px;color:var(--text3);margin-top:2px">A/C: 00681011050474 · CH:1002 · MID:197 · Store:000001</div></div>
+                <label class="tgl"><input type="checkbox" checked onchange="toggleGW('alfa',this)"><div class="tgl-sl"></div></label>
+              </div>
+              <div class="gw-note"><i class="ti ti-lock" style="font-size:14px;flex-shrink:0"></i>Username / Password / Hash / Key1 / Key2 — Render ENV — <strong style="color:var(--gold2)">Hidden</strong></div>
+            </div>
+            <!-- Meezan -->
+            <div class="gw-card" id="gw-mezn">
+              <div class="gw-head">
+                <div class="gw-logo" style="background:linear-gradient(135deg,#00695c,#00897b)">
+                  <span style="color:#fff;font-size:9px;font-weight:900;line-height:1.2;text-align:center">Meezan<br>Bank</span>
+                </div>
+                <div><div class="gw-name">Meezan Bank</div><div class="gw-reg">🇵🇰 Islamic Banking · MezPay</div></div>
+              </div>
+              <div class="gw-stats">
+                <div class="gw-stat"><div class="gw-sv">5%</div><div class="gw-sl">Volume Share</div></div>
+                <div class="gw-stat"><div class="gw-sv">88.9%</div><div class="gw-sl">Success Rate</div></div>
+              </div>
+              <div class="gw-sr">
+                <div><div style="font-size:13px;font-weight:600">PLAYBEAT DIGITAL PRIVATE LIMITED</div><div style="font-size:11px;color:var(--text3);margin-top:2px">IBAN: PK86MEZN0015040115102971</div></div>
+                <label class="tgl"><input type="checkbox" checked onchange="toggleGW('mezn',this)"><div class="tgl-sl"></div></label>
+              </div>
+              <div class="gw-note"><i class="ti ti-lock" style="font-size:14px;flex-shrink:0"></i>MezPay Username / Password — Render ENV — <strong style="color:var(--gold2)">Hidden</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Rules -->
+        <div class="card">
+          <div class="card-hd"><span class="card-title">⚙️ Payment Rules</span><button class="btn bs" onclick="saveRules()"><i class="ti ti-device-floppy"></i> Save Rules</button></div>
+          <div class="grid-2">
+            <div>
+              <div class="mr"><span style="color:var(--text2)">High-value review threshold</span><input type="text" value="₨50,000" style="width:130px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">Refund window (undelivered only)</span><input type="text" value="24 hours" style="width:120px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">JC / EP auto-retry</span><input type="text" value="Once after 5 min" style="width:150px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">Bank TXN — require</span><input type="text" value="Screenshot + last 4 digits" style="width:200px;text-align:right"></div>
+            </div>
+            <div>
+              <div class="mr"><span style="color:var(--text2)">Fraud trigger</span><input type="text" value="3 failures / hour" style="width:140px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">Stripe 3DS</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Auto-deliver on confirm</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Manual review above threshold</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction Log -->
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Recent Transactions</span><button class="btn bs" onclick="toast('📥 Exporting transactions…')"><i class="ti ti-download"></i> Export</button></div>
+          <table><tr><th>TXN ID</th><th>Order</th><th>Gateway</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+          <tr><td class="mono">JC-8821-X9</td><td class="mono">#4821</td><td>JazzCash</td><td class="mono">₨5,500</td><td><span class="pill pg">Success</span></td><td class="mono" style="font-size:11px">14:22:08</td></tr>
+          <tr><td class="mono">STR-pi_3T…</td><td class="mono">#4820</td><td>Stripe</td><td class="mono">₨24,800</td><td><span class="pill pg">Success</span></td><td class="mono" style="font-size:11px">13:08:44</td></tr>
+          <tr><td class="mono">EP-74910-Y</td><td class="mono">#4819</td><td>Easypaisa</td><td class="mono">₨16,400</td><td><span class="pill pa">Pending</span></td><td class="mono" style="font-size:11px">12:55:01</td></tr>
+          <tr><td class="mono">ALF-197-4818</td><td class="mono">#4818</td><td>Alfalah IBFT</td><td class="mono">₨15,000</td><td><span class="pill pg">Success</span></td><td class="mono" style="font-size:11px">11:30:17</td></tr>
+          <tr><td class="mono">JC-8817-Z2</td><td class="mono">#4817</td><td>JazzCash</td><td class="mono">₨2,800</td><td><span class="pill pr">Failed</span></td><td class="mono" style="font-size:11px">10:14:52</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="analytics" class="section">
+      <div class="topbar"><div class="tb-title">Analytics</div><div class="tb-actions">
+        <select style="height:34px" onchange="buildAnalytics()"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 3 months</option><option value="365">This year</option></select>
+        <button class="btn bs bp" onclick="toast('📊 Exporting report…')"><i class="ti ti-file-export"></i> Export Report</button>
+      </div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:18px">
+          <div class="metric"><div class="m-label">Total Revenue</div><div class="m-val">₨22.4L</div><div class="m-delta up">↑ 14% vs last period</div></div>
+          <div class="metric"><div class="m-label">Orders</div><div class="m-val">4,821</div><div class="m-delta up">↑ 8.4%</div></div>
+          <div class="metric"><div class="m-label">Avg Order Value</div><div class="m-val">₨4,650</div><div class="m-delta up">↑ 5.2%</div></div>
+          <div class="metric"><div class="m-label">Conversion Rate</div><div class="m-val">3.8%</div><div class="m-delta flat">— stable</div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Monthly Revenue (PKR)</span></div>
+          <div class="chart-bars" id="rev-chart"></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-hd"><span class="card-title">Sales by Category</span></div><div id="an-cats" style="display:flex;flex-direction:column;gap:10px"></div></div>
+          <div class="card"><div class="card-hd"><span class="card-title">Gateway Performance</span></div><div id="an-gw" style="display:flex;flex-direction:column;gap:10px"></div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Top Products This Period</span></div>
+        <table><tr><th>Product</th><th>Category</th><th>Units Sold</th><th>Revenue</th><th>Trend</th></tr>
+        <tr><td style="font-weight:600">ChatGPT Plus 1M</td><td><span class="pill pb">AI Tools</span></td><td>1,248</td><td class="mono">₨6.86L</td><td><span class="pill pg">↑ 22%</span></td></tr>
+        <tr><td style="font-weight:600">Spotify Premium 1M</td><td><span class="pill pb">Subscriptions</span></td><td>2,108</td><td class="mono">₨2.53L</td><td><span class="pill pg">↑ 15%</span></td></tr>
+        <tr><td style="font-weight:600">Midjourney Basic</td><td><span class="pill pb">AI Tools</span></td><td>930</td><td class="mono">₨2.60L</td><td><span class="pill pg">↑ 31%</span></td></tr>
+        <tr><td style="font-weight:600">Xbox Game Pass 3M</td><td><span class="pill pac">Subscriptions</span></td><td>540</td><td class="mono">₨4.81L</td><td><span class="pill pa">↑ 4%</span></td></tr>
+        <tr><td style="font-weight:600">Adobe CC All Apps</td><td><span class="pill pgo">Software</span></td><td>612</td><td class="mono">₨9.18L</td><td><span class="pill pg">↑ 9%</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="customers" class="section">
+      <div class="topbar"><div class="tb-title">Customers</div><div class="tb-actions">
+        <input type="search" id="cst-q" placeholder="Search name or email…" oninput="filterCust()" style="width:210px">
+        <button class="btn bs bp" onclick="toast('📥 Customer export started…')"><i class="ti ti-download"></i> Export</button>
+      </div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="metric"><div class="m-label">Total Customers</div><div class="m-val">8,412</div></div>
+          <div class="metric"><div class="m-label">New This Month</div><div class="m-val">342</div><div class="m-delta up">↑ 12%</div></div>
+          <div class="metric"><div class="m-label">Repeat Buyers</div><div class="m-val" style="color:var(--green)">61%</div></div>
+          <div class="metric"><div class="m-label">Avg Order Value</div><div class="m-val">₨5,200</div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Customer List</span></div>
+        <table><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Last Order</th><th>Status</th><th></th></tr>
+        <tbody id="cst-tb">
+          <tr class="cr"><td style="font-weight:600">Ali Hassan</td><td class="mono" style="color:var(--text2)">ali@example.pk</td><td>24</td><td class="mono">₨1.2L</td><td>Today</td><td><span class="pill pg">Active</span></td><td><button class="btn bs bd bi" title="Ban" onclick="banCustomer(this)"><i class="ti ti-ban"></i></button></td></tr>
+          <tr class="cr"><td style="font-weight:600">Zara Ahmed</td><td class="mono" style="color:var(--text2)">zara@example.pk</td><td>18</td><td class="mono">₨92K</td><td>Yesterday</td><td><span class="pill pg">Active</span></td><td><button class="btn bs bd bi" onclick="banCustomer(this)"><i class="ti ti-ban"></i></button></td></tr>
+          <tr class="cr"><td style="font-weight:600">Bilal Khan</td><td class="mono" style="color:var(--text2)">bilal@email.pk</td><td>15</td><td class="mono">₨78K</td><td>2 days ago</td><td><span class="pill pg">Active</span></td><td><button class="btn bs bd bi" onclick="banCustomer(this)"><i class="ti ti-ban"></i></button></td></tr>
+          <tr class="cr"><td style="font-weight:600">Sana Mir</td><td class="mono" style="color:var(--text2)">sana@mail.pk</td><td>11</td><td class="mono">₨54K</td><td>3 days ago</td><td><span class="pill pg">Active</span></td><td><button class="btn bs bd bi" onclick="banCustomer(this)"><i class="ti ti-ban"></i></button></td></tr>
+          <tr class="cr"><td style="font-weight:600">Usman Raza</td><td class="mono" style="color:var(--text2)">usman@pk.net</td><td>9</td><td class="mono">₨41K</td><td>Today</td><td><span class="pill pg">Active</span></td><td><button class="btn bs bd bi" onclick="banCustomer(this)"><i class="ti ti-ban"></i></button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div id="support" class="section">
+      <div class="topbar"><div class="tb-title">Support Tickets</div><div class="tb-actions">
+        <select style="height:34px" onchange="filterSupport(this.value)"><option value="">All statuses</option><option>Open</option><option>In Progress</option><option>Resolved</option></select>
+      </div></div>
+      <div class="content">
+        <div class="grid-4" style="margin-bottom:16px">
+          <div class="metric"><div class="m-label">Open Tickets</div><div class="m-val" style="color:var(--red)">8</div></div>
+          <div class="metric"><div class="m-label">In Progress</div><div class="m-val" style="color:var(--amber)">5</div></div>
+          <div class="metric"><div class="m-label">Resolved Today</div><div class="m-val" style="color:var(--green)">14</div></div>
+          <div class="metric"><div class="m-label">Avg Response</div><div class="m-val">42min</div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Ticket Queue</span></div>
+        <table><tr><th>ID</th><th>Customer</th><th>Issue</th><th>Priority</th><th>Status</th><th>Created</th><th></th></tr>
+        <tbody id="sup-tb">
+          <tr class="sp" data-s="In Progress"><td class="mono">#T-091</td><td>Bilal Khan</td><td>Payment pending — order not delivered</td><td><span class="pill pr">High</span></td><td><span class="pill pa">In Progress</span></td><td class="mono" style="font-size:11px">12:55</td><td><button class="btn bs" onclick="replyTicket(this,'#T-091')">Reply</button></td></tr>
+          <tr class="sp" data-s="Open"><td class="mono">#T-090</td><td>Usman Raza</td><td>JazzCash failed — refund?</td><td><span class="pill pr">High</span></td><td><span class="pill pr">Open</span></td><td class="mono" style="font-size:11px">10:14</td><td><button class="btn bs" onclick="replyTicket(this,'#T-090')">Reply</button></td></tr>
+          <tr class="sp" data-s="Open"><td class="mono">#T-089</td><td>Ayesha Noor</td><td>Wrong game key received</td><td><span class="pill pa">Medium</span></td><td><span class="pill pr">Open</span></td><td class="mono" style="font-size:11px">Yesterday</td><td><button class="btn bs" onclick="replyTicket(this,'#T-089')">Reply</button></td></tr>
+          <tr class="sp" data-s="Resolved"><td class="mono">#T-088</td><td>Hassan Ali</td><td>Account access issue</td><td><span class="pill pb">Low</span></td><td><span class="pill pg">Resolved</span></td><td class="mono" style="font-size:11px">Yesterday</td><td><button class="btn bs" onclick="toast('📋 Ticket #T-088 viewed')">View</button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- HOMEPAGE EDITOR -->
+    <div id="homepage" class="section">
+      <div class="topbar"><div class="tb-title">Homepage Content Editor</div><div class="tb-actions">
+        <button class="btn bs bp" onclick="saveHomepage()"><i class="ti ti-device-floppy"></i> Save &amp; Publish</button>
+        <a href="https://playbeat.digital" target="_blank" class="btn bs"><i class="ti ti-external-link"></i> Preview</a>
+      </div></div>
+      <div class="content">
+        <div class="grid-2">
+          <div>
+            <div class="card"><div class="card-hd"><span class="card-title">Hero Section</span></div>
+              <div class="fg"><label>Headline</label><input type="text" id="hp-hl" value="The Digital Heaven" style="width:100%"></div>
+              <div class="fg"><label>Sub-headline</label><textarea id="hp-sub" rows="2" style="width:100%">WORLD WIDE SUBSCRIPTIONS, PREMIUM ACCOUNTS, GAMES HUB AND POPULAR STREAMING APPS.</textarea></div>
+              <div class="fg"><label>Hero Badge</label><input type="text" id="hp-badge" value="⚡ Live Marketplace" style="width:100%"></div>
+              <div class="mr"><span style="color:var(--text2)">Show Stats Bar</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Show Search in Hero</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+            </div>
+            <div class="card"><div class="card-hd"><span class="card-title">Ticker Bar Messages</span></div>
+              <div class="fg"><label>One message per line</label>
+                <textarea id="hp-ticker" rows="6" style="width:100%">🔥 Valorant Elderflame Bundle — $89
+⚡ ChatGPT Plus 1M — $20
+🎮 PS Plus 12M — $59
+💎 Adobe CC All Apps — $54
+🤖 Midjourney Basic — $10
+🆓 Free Gift Card on Orders $50+
+🔒 SSL Secured · Instant Delivery</textarea>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card"><div class="card-hd"><span class="card-title">Section Visibility</span></div>
+              <div class="mr"><span style="color:var(--text2)">🔥 Trending section</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">💎 Global / Best Value</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">🏷️ Discounts section</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Category icons row</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Promo banner strip</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Newsletter signup footer</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+            </div>
+            <div class="card"><div class="card-hd"><span class="card-title">Active Banners</span><button class="btn bs bp" onclick="addBanner()"><i class="ti ti-plus"></i> Add</button></div>
+              <div id="banner-list" style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(212,175,55,.1)"><span>🔥</span><div style="flex:1;font-size:13px">Summer Sale — Up to 40% OFF</div><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label><button class="btn bi bs bd" onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(212,175,55,.1)"><span>💎</span><div style="flex:1;font-size:13px">Join PlayBeat Prime — Exclusive Deals</div><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label><button class="btn bi bs bd" onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES CHANNELS -->
+    <div id="channels" class="section">
+      <div class="topbar"><div class="tb-title">Sales Channels</div></div>
+      <div class="content">
+        <div class="grid-2">
+          <div>
+            <div class="cc"><div class="cc-icon">🌐</div><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">playbeat.digital</div><div style="font-size:11px;color:var(--text3)">Primary storefront · Full automated flow</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="bt" style="flex:1"><div class="bf" style="width:88%;background:var(--gold)"></div></div><span style="font-size:11px;color:var(--text2)">88%</span></div></div><span class="pill pg">Live</span></div>
+            <div class="cc"><div class="cc-icon">💬</div><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">WhatsApp</div><div style="font-size:11px;color:var(--text3)">Manual intake · Screenshot verify</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="bt" style="flex:1"><div class="bf" style="width:7%;background:#25D366"></div></div><span style="font-size:11px;color:var(--text2)">7%</span></div></div><span class="pill pg">Active</span></div>
+            <div class="cc"><div class="cc-icon">✈️</div><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">Telegram Bot</div><div style="font-size:11px;color:var(--text3)">Automated · !buy commands</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="bt" style="flex:1"><div class="bf" style="width:3%;background:#0088cc"></div></div><span style="font-size:11px;color:var(--text2)">3%</span></div></div><span class="pill pg">Active</span></div>
+            <div class="cc"><div class="cc-icon">🎮</div><div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:2px">Discord</div><div style="font-size:11px;color:var(--text3)">Community · Bot !buy commands</div><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div class="bt" style="flex:1"><div class="bf" style="width:2%;background:#5865F2"></div></div><span style="font-size:11px;color:var(--text2)">2%</span></div></div><span class="pill pa">Beta</span></div>
+          </div>
+          <div>
+            <div class="card"><div class="card-hd"><span class="card-title">Channel Monitor</span></div>
+            <table><tr><th>Channel</th><th>Orders</th><th>Revenue</th><th>Uptime</th></tr>
+            <tr><td>Website</td><td>274</td><td class="mono">₨3.71L</td><td><span class="pill pg">99.9%</span></td></tr>
+            <tr><td>WhatsApp</td><td>22</td><td class="mono">₨28K</td><td><span class="pill pg">100%</span></td></tr>
+            <tr><td>Telegram</td><td>14</td><td class="mono">₨18K</td><td><span class="pill pg">100%</span></td></tr>
+            <tr><td>Discord</td><td>2</td><td class="mono">₨5.5K</td><td><span class="pill pa">98%</span></td></tr>
+            </table></div>
+            <div class="card"><div class="card-hd"><span class="card-title">Add New Channel</span></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn bs"><i class="ti ti-brand-instagram"></i> Instagram</button>
+              <button class="btn bs"><i class="ti ti-brand-tiktok"></i> TikTok Shop</button>
+              <button class="btn bs"><i class="ti ti-brand-facebook"></i> Facebook</button>
+              <button class="btn bs">Daraz PK</button>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROLES & AUTH -->
+    <div id="roles" class="section">
+      <div class="topbar"><div class="tb-title">Roles &amp; Authorization</div><div class="tb-actions"><button class="btn bs bp" onclick="addStaff()"><i class="ti ti-plus"></i> Add Staff</button></div></div>
+      <div class="content">
+        <div class="grid-3" style="margin-bottom:18px">
+          <div class="card" style="margin-bottom:0"><div class="card-hd"><span class="card-title">👑 Super Admin</span></div><div style="font-size:12px;color:var(--text3);line-height:1.7">Full access to all panels, payment gateway toggles, staff management, password change, system config, and audit log.</div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-hd"><span class="card-title">⚙️ Admin</span></div><div style="font-size:12px;color:var(--text3);line-height:1.7">Inventory, orders, products, coupons, customers, homepage editor, analytics. Cannot change credentials or add staff.</div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-hd"><span class="card-title">🎧 Support</span></div><div style="font-size:12px;color:var(--text3);line-height:1.7">View orders and customers, manage support tickets, issue refunds up to ₨5,000 without approval.</div></div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Staff Members</span></div>
+        <table><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th></th></tr>
+        <tbody id="staff-tb">
+          <tr><td style="font-weight:600">PlayBeat Admin</td><td class="mono" style="color:var(--text2)">admin@playbeat.digital</td><td><span class="pill pgo">Super Admin</span></td><td><span class="pill pg">Active</span></td><td>Now</td><td></td></tr>
+          <tr><td style="font-weight:600">Support Agent</td><td class="mono" style="color:var(--text2)">support@playbeat.digital</td><td><span class="pill pb">Support</span></td><td><span class="pill pg">Active</span></td><td>1h ago</td><td><button class="btn bs bd" onclick="delRow(this)">Remove</button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- API CONFIG -->
+    <div id="api" class="section">
+      <div class="topbar"><div class="tb-title">API &amp; Environment Configuration</div></div>
+      <div class="content">
+        <div style="background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.25);border-radius:12px;padding:12px 18px;margin-bottom:18px;font-size:13px;color:var(--red);display:flex;align-items:center;gap:10px">
+          <i class="ti ti-alert-triangle" style="font-size:18px;flex-shrink:0"></i>
+          <div>API keys and secrets are <strong>never stored or displayed here</strong>. Set them directly in your Render dashboard environment variables. This panel shows connection status and endpoint reference only.</div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-hd"><span class="card-title">Service Connections</span></div>
+            <div class="mr"><span style="color:var(--text2)">Backend API</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">playbeat-backend.onrender.com</span><span class="pill pg">✓ Connected</span></div></div>
+            <div class="mr"><span style="color:var(--text2)">MongoDB Atlas</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">playbeat.umqpdyx.mongodb.net</span><span class="pill pg">✓ Connected</span></div></div>
+            <div class="mr"><span style="color:var(--text2)">Stripe</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">acct_1TMvCGGTlnWXlnXp</span><span class="pill pa">Sandbox</span></div></div>
+            <div class="mr"><span style="color:var(--text2)">JazzCash</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">03318333368</span><span class="pill pg">✓ Live</span></div></div>
+            <div class="mr"><span style="color:var(--text2)">Bank Alfalah (AlfaPay)</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">MID:197 · Store:000001</span><span class="pill pg">✓ Live</span></div></div>
+            <div class="mr"><span style="color:var(--text2)">Meezan (MezPay)</span><div style="display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:11px">PK86MEZN…2971</span><span class="pill pg">✓ Live</span></div></div>
+          </div>
+          <div class="card"><div class="card-hd"><span class="card-title">Environment Variables (Render)</span></div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Set these in your Render dashboard → Environment tab. Values are masked.</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div class="env-row"><span class="mono" style="color:var(--text2)">MONGODB_URI</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">SECRET_KEY</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">PORT</span><span style="color:var(--text2)">3000</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">STRIPE_SECRET_KEY</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">STRIPE_RESTRICTED_KEY</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">VITE_STRIPE_PUBLISHABLE_KEY</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">JAZZCASH_MERCHANTID</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">JAZZCASH_PASSWORD</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">JAZZCASH_HASHKEY</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">ALFAPAY_CHANNEL_ID</span><span style="color:var(--text2)">1002</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">ALFAPAY_MERCHANT_ID</span><span style="color:var(--text2)">197</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">ALFAPAY_MERCHANT_USERNAME</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">ALFAPAY_MERCHANT_PASSWORD</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">ALFAPAY_KEY_1 / KEY_2</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">MEZPAY_USERNAME</span><span style="color:var(--green)">✓ Set</span></div>
+              <div class="env-row"><span class="mono" style="color:var(--text2)">MEZPAY_PASSWORD</span><span style="color:var(--green)">✓ Set</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">API Endpoint Reference</span><span class="card-sub">playbeat-backend.onrender.com</span></div>
+        <table><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/auth/login</td><td><span class="pill">Public</span></td><td>Admin / user login → JWT</td></tr>
+        <tr><td><span class="pill pb">GET</span></td><td class="mono">/api/products</td><td><span class="pill">Public</span></td><td>List all products</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/orders/create-pending</td><td><span class="pill">Optional JWT</span></td><td>Create order (JC / EP / IBFT)</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/payments/stripe/create-checkout</td><td><span class="pill">Optional JWT</span></td><td>Stripe hosted checkout session</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/payments/jazzcash/initiate</td><td><span class="pill">Optional JWT</span></td><td>JazzCash wallet redirect</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/payments/alfalah/initiate</td><td><span class="pill">Optional JWT</span></td><td>Bank Alfalah AlfaPay redirect</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/payments/meezan/initiate</td><td><span class="pill">Optional JWT</span></td><td>Meezan IBAN details + order lock</td></tr>
+        <tr><td><span class="pill pb">GET</span></td><td class="mono">/api/admin/dashboard</td><td><span class="pill pa">Admin JWT</span></td><td>Dashboard KPIs</td></tr>
+        <tr><td><span class="pill pb">GET</span></td><td class="mono">/api/analytics/dashboard</td><td><span class="pill pa">Admin JWT</span></td><td>Full analytics data</td></tr>
+        <tr><td><span class="pill pgo">PUT</span></td><td class="mono">/api/admin/orders/:id/status</td><td><span class="pill pa">Admin JWT</span></td><td>Update order status</td></tr>
+        <tr><td><span class="pill pg">POST</span></td><td class="mono">/api/payments/stripe/webhook</td><td><span class="pill">Stripe sig</span></td><td>Webhook — auto-deliver on success</td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settings" class="section">
+      <div class="topbar"><div class="tb-title">Store Settings</div><div class="tb-actions"><button class="btn bs bp" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save All</button></div></div>
+      <div class="content">
+        <div class="grid-2">
+          <div>
+            <div class="card"><div class="card-hd"><span class="card-title">Store Configuration</span></div>
+              <div class="fg"><label>Store Name</label><input type="text" value="PlayBeat Digital" style="width:100%"></div>
+              <div class="fg"><label>Domain</label><input type="text" value="playbeat.digital" style="width:100%"></div>
+              <div class="fg"><label>Support Email</label><input type="email" value="support@playbeat.digital" style="width:100%"></div>
+              <div class="fg"><label>WhatsApp</label><input type="text" value="+92 339 0005715" style="width:100%"></div>
+              <div class="fg"><label>Telegram</label><input type="text" value="@pbeatdigi" style="width:100%"></div>
+              <div class="fg"><label>Currency</label><select style="width:100%"><option>PKR — Pakistani Rupee (₨)</option><option>USD — US Dollar</option></select></div>
+              <div class="fg"><label>Timezone</label><select style="width:100%"><option>Asia/Karachi (PKT UTC+5)</option></select></div>
+            </div>
+            <div class="card"><div class="card-hd"><span class="card-title">Delivery Settings</span></div>
+              <div class="mr"><span style="color:var(--text2)">Instant delivery enabled</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Manual delivery SLA</span><input type="text" value="2 hours" style="width:120px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">Low stock threshold</span><input type="number" value="10" style="width:80px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">Refund window</span><input type="text" value="24 hours" style="width:120px;text-align:right"></div>
+              <div class="mr"><span style="color:var(--text2)">High-value manual review</span><input type="text" value="₨50,000" style="width:120px;text-align:right"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card"><div class="card-hd"><span class="card-title">Change Admin Password</span></div>
+              <div class="fg"><label>Current Password</label><input type="password" id="cur-pw" placeholder="••••••••" style="width:100%"></div>
+              <div class="fg"><label>New Password</label><input type="password" id="new-pw" placeholder="Min 8 characters" style="width:100%"></div>
+              <div class="fg"><label>Confirm New Password</label><input type="password" id="cf-pw" placeholder="••••••••" style="width:100%"></div>
+              <button class="btn bp bs" onclick="changePass()"><i class="ti ti-key"></i> Update Password</button>
+            </div>
+            <div class="card"><div class="card-hd"><span class="card-title">Notification Channels</span></div>
+              <div class="mr"><span style="color:var(--text2)">Email alerts</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">WhatsApp alerts</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Telegram alerts</span><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></div>
+              <div class="mr"><span style="color:var(--text2)">Discord webhook</span><label class="tgl"><input type="checkbox"><div class="tgl-sl"></div></label></div>
+            </div>
+            <div class="card"><div class="card-hd"><span class="card-title">Alert Triggers</span></div>
+              <div class="mr"><span style="color:var(--text2)">Payment stuck &gt;30 min</span><span class="pill pg">On</span></div>
+              <div class="mr"><span style="color:var(--text2)">Stock below threshold</span><span class="pill pg">On</span></div>
+              <div class="mr"><span style="color:var(--text2)">3+ failures / hour</span><span class="pill pg">On</span></div>
+              <div class="mr"><span style="color:var(--text2)">Chargeback received</span><span class="pill pg">On</span></div>
+              <div class="mr"><span style="color:var(--text2)">Site downtime</span><span class="pill pg">On</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI PROMPT -->
+    <div id="prompt" class="section">
+      <div class="topbar"><div class="tb-title">Backend AI Prompt</div><div class="tb-actions">
+        <button class="btn bs" id="copy-btn" onclick="copyPrompt()"><i class="ti ti-copy"></i> Copy</button>
+        <button class="btn bs bp" onclick="savePrompt()"><i class="ti ti-device-floppy"></i> Save Changes</button>
+      </div></div>
+      <div class="content">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Production-ready system prompt for PlayBeat's AI admin assistant. Paste into your LLM API integration or Claude API call.</p>
+        <textarea id="prompt-txt" style="width:100%;height:430px;font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.4);border:1px solid rgba(212,175,55,.12);border-radius:12px;padding:18px;color:var(--text2);line-height:1.85">You are the backend admin AI assistant for PlayBeat Digital (playbeat.digital) — a Pakistan-based digital marketplace selling game keys, subscriptions, AI tools, software, and gift cards.
+
+PLATFORM CONTEXT
+- Store URL: https://playbeat.digital
+- Backend API: https://playbeat-backend.onrender.com
+- Currency: Pakistani Rupee (PKR). Display all prices as ₨ X,XXX format.
+- Timezone: PKT (UTC+5). Use 24-hour time in logs.
+- Customer base: primarily Pakistan, with global buyers.
+- Product categories: Games, AI Tools, Software, Gift Cards, Subscriptions, Top Ups, Game Items, Accounts.
+
+PAYMENT GATEWAYS SUPPORTED
+Local (Pakistan):
+- JazzCash: Mobile wallet (03318333368). PLAYBEAT ARENA MERCHANT ACCOUNT. Auto-confirm via webhook. HMAC-SHA256 signature.
+- Easypaisa: Telenor wallet. Manual + automated confirmation. Screenshot verify for IBFT.
+- Bank Alfalah (AlfaPay): IBFT. Account 00681011050474. PLAYBEAT DIGITAL (PVT. LTD.). Channel 1002, Merchant 197, Store 000001.
+- Meezan Bank (MezPay): IBAN PK86MEZN0015040115102971. PLAYBEAT DIGITAL PRIVATE LIMITED. Manual screenshot confirmation.
+
+International:
+- Stripe: Credit/Debit via hosted checkout sessions. Connected account acct_1TMvCGGTlnWXlnXp. 3DS required. Auto-deliver on webhook checkout.session.completed.
+
+Payment rules:
+- NEVER release product keys until payment is confirmed.
+- For bank transfers, require screenshot + last 4 digits of account number.
+- Flag transactions above ₨50,000 for manual review.
+- Refund window: 24 hours for non-delivered items only.
+- Auto-retry failed JazzCash/Easypaisa once after 5 minutes.
+
+INVENTORY MANAGEMENT
+- Instant delivery: system auto-sends key on payment confirmation.
+- Manual delivery: admin notified, send within 2 hours.
+- Low stock threshold: ≤10 units → flag LOW STOCK, notify admin.
+- Out of stock: auto-hide listing or show "Notify Me" button.
+
+ORDER PROCESSING
+Lifecycle: Placed → Payment Pending → Payment Confirmed → Key Sent → Delivered → Closed.
+Failed: Placed → Payment Failed → Retry or Refund.
+
+ADMIN COMMANDS
+- "Add stock [product] [qty] [keys...]" → update inventory, log it.
+- "Mark order #XXXX delivered" → update status, log timestamp.
+- "Refund order #XXXX" → initiate refund, flag for payment reversal.
+- "Show low stock" → list products ≤10 units.
+- "Show pending orders" → list Payment Pending or Manual Delivery state.
+- "Sales report [today/week/month]" → summarize by category and gateway.
+- "Disable gateway [name]" → flag inactive, stop routing new orders.
+- "Ban customer [email]" → block future orders.
+
+SECURITY
+- Never expose raw API keys, secrets, merchant passwords, or database IDs.
+- Flag suspicious activity rather than acting unilaterally.
+- Confirm every action with a PKT timestamp and admin ID.</textarea>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- PRODUCT MODAL -->
+<div class="mo" id="prod-modal">
+  <div class="mo-box">
+    <h3 id="pm-title">Add New Product</h3>
+    <div class="frow">
+      <div class="fg"><label>Product Name *</label><input type="text" id="pf-name" placeholder="e.g. ChatGPT Plus 1M"></div>
+      <div class="fg"><label>Category *</label>
+        <select id="pf-cat"><option>Games</option><option>Gift Cards</option><option>Software</option><option>AI Tools</option><option>Game Items</option><option>Accounts</option><option>Subscriptions</option><option>Top Up</option></select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Price (PKR) *</label><input type="number" id="pf-price" placeholder="5500"></div>
+      <div class="fg"><label>Sale Price (PKR)</label><input type="number" id="pf-sale" placeholder="Leave blank if none"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Stock (keys/codes)</label><input type="number" id="pf-stock" placeholder="50"></div>
+      <div class="fg"><label>Delivery Type</label><select id="pf-del"><option>Instant</option><option>Manual</option></select></div>
+    </div>
+    <div class="fg"><label>Description</label><textarea id="pf-desc" rows="3" style="width:100%" placeholder="Short product description…"></textarea></div>
+    <div class="frow">
+      <div class="fg"><label>Badge</label><select id="pf-badge"><option value="">None</option><option>HOT</option><option>NEW</option><option>SALE</option><option>TRENDING</option><option>RARE</option></select></div>
+      <div class="fg"><label>Status</label><select id="pf-active"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn" onclick="closeProdModal()">Cancel</button>
+      <button class="btn bp" onclick="saveProd()"><i class="ti ti-check"></i> Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- COUPON MODAL -->
+<div class="mo" id="cpn-modal">
+  <div class="mo-box">
+    <h3>New Coupon</h3>
+    <div class="frow">
+      <div class="fg"><label>Coupon Code *</label><input type="text" id="cf-code" placeholder="SAVE20" style="text-transform:uppercase"></div>
+      <div class="fg"><label>Discount Type</label><select id="cf-type"><option value="percent">Percent (%)</option><option value="fixed">Fixed (₨)</option></select></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Discount Value *</label><input type="number" id="cf-val" placeholder="20"></div>
+      <div class="fg"><label>Usage Limit (blank = ∞)</label><input type="number" id="cf-lim" placeholder="500"></div>
+    </div>
+    <div class="fg"><label>Expiry Date (optional)</label><input type="date" id="cf-exp" style="width:100%"></div>
+    <div class="mo-ft">
+      <button class="btn" onclick="closeCpnModal()">Cancel</button>
+      <button class="btn bp" onclick="saveCpn()"><i class="ti ti-check"></i> Create Coupon</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-el" style="position:fixed;bottom:26px;right:22px;z-index:9998;background:linear-gradient(135deg,#0a1828,#0d1e35);border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:13px 20px;font-size:13px;color:var(--gold2);box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateY(90px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;display:flex;align-items:center;gap:8px;max-width:340px"></div>
+
+<script>
+/* ── CONFIG ─────────────────────────────────────── */
+const API_URL = 'https://playbeat-backend.onrender.com';
+let ADMIN_PASS = localStorage.getItem('pb_pw') || 'playbeat2026';
+
+/* ── AUTH ───────────────────────────────────────── */
+function doLogin(){
+  const u=document.getElementById('lg-u').value.trim();
+  const p=document.getElementById('lg-p').value.trim();
+  if(u==='admin'&&p===ADMIN_PASS){
+    localStorage.setItem('pb_sess','1-'+Date.now());
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('shell').classList.add('visible');
+    boot();
+  } else {
+    const e=document.getElementById('lg-err');
+    e.style.display='block';
+    setTimeout(()=>e.style.display='none',3000);
+  }
+}
+document.getElementById('lg-p').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('lg-u').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+function doLogout(){localStorage.removeItem('pb_sess');location.reload()}
+
+if(localStorage.getItem('pb_sess')){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('shell').classList.add('visible');
+  boot();
+}
+
+function boot(){
+  tickClock(); setInterval(tickClock,1000);
+  buildCatSales(); buildAnalytics(); loadProds();
+  document.getElementById('dash-txt').textContent='7 pending deliveries · 5 low-stock items · 1 stuck Easypaisa payment (>30 min)';
+}
+
+/* ── CLOCK ──────────────────────────────────────── */
+function tickClock(){
+  const now=new Date();
+  document.getElementById('ct-time').textContent=now.toLocaleTimeString('en-PK',{timeZone:'Asia/Karachi',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' PKT';
+  const dd=document.getElementById('dash-date');
+  if(dd) dd.textContent=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric',timeZone:'Asia/Karachi'});
+}
+
+/* ── NAV ────────────────────────────────────────── */
+function nav(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+/* ── DASHBOARD ──────────────────────────────────── */
+function refreshDash(){toast('🔄 Dashboard refreshed')}
+
+function buildCatSales(){
+  const cats=[{n:'Games',p:72,c:'#7c6cff'},{n:'AI Tools',p:58,c:'#4fa0ff'},{n:'Subscriptions',p:44,c:'#22d68a'},{n:'Software',p:31,c:'#f5a623'},{n:'Gift Cards',p:19,c:'#ff5a5a'},{n:'Top Up',p:14,c:'#d4af37'}];
+  document.getElementById('cat-sales').innerHTML=cats.map(c=>`<div style="display:flex;align-items:center;gap:12px;font-size:13px"><span style="width:110px;color:var(--text2)">${c.n}</span><div class="bt" style="flex:1"><div class="bf" style="width:${c.p}%;background:${c.c}"></div></div><span style="width:36px;text-align:right;font-weight:500">${c.p}%</span></div>`).join('');
+}
+
+/* ── ANALYTICS ──────────────────────────────────── */
+function buildAnalytics(){
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const vals=[92,115,87,143,128,169,132,156,184,141,198,220];
+  const mx=Math.max(...vals);
+  document.getElementById('rev-chart').innerHTML=vals.map((v,i)=>`<div class="cbc"><div class="cb" style="height:${Math.max(6,(v/mx)*110)}px" data-tip="₨${v}K — ${months[i]}"></div><div class="cl">${months[i]}</div></div>`).join('');
+  const cats=[{n:'Games',p:72,c:'#7c6cff'},{n:'AI Tools',p:58,c:'#4fa0ff'},{n:'Subscriptions',p:44,c:'#22d68a'},{n:'Software',p:31,c:'#f5a623'},{n:'Gift Cards',p:19,c:'#ff5a5a'}];
+  document.getElementById('an-cats').innerHTML=cats.map(c=>`<div style="display:flex;align-items:center;gap:12px;font-size:13px"><span style="width:110px;color:var(--text2)">${c.n}</span><div class="bt" style="flex:1"><div class="bf" style="width:${c.p}%;background:${c.c}"></div></div><span style="width:36px;text-align:right;font-weight:500">${c.p}%</span></div>`).join('');
+  const gws=[{n:'JazzCash',p:38,c:'#e53935'},{n:'Easypaisa',p:27,c:'#43a047'},{n:'Stripe',p:21,c:'#6772e5'},{n:'Bank Alfalah',p:9,c:'#1565c0'},{n:'Meezan IBAN',p:5,c:'#00897b'}];
+  document.getElementById('an-gw').innerHTML=gws.map(g=>`<div style="display:flex;align-items:center;gap:12px;font-size:13px"><span style="width:110px;color:var(--text2)">${g.n}</span><div class="bt" style="flex:1"><div class="bf" style="width:${g.p}%;background:${g.c}"></div></div><span style="width:36px;text-align:right;font-weight:500">${g.p}%</span></div>`).join('');
+}
+
+/* ── PRODUCTS ───────────────────────────────────── */
+let PRODS=JSON.parse(localStorage.getItem('pb_prods')||'[]');
+if(!PRODS.length){
+  PRODS=[
+    {id:1,name:'ChatGPT Plus 1M',cat:'AI Tools',price:5500,sale:'',stock:142,del:'Instant',active:true,badge:'HOT'},
+    {id:2,name:'Valorant Bundle',cat:'Games',price:24800,sale:'',stock:88,del:'Instant',active:true,badge:'HOT'},
+    {id:3,name:'PS Plus 12M',cat:'Subscriptions',price:16400,sale:14900,stock:9,del:'Instant',active:true,badge:''},
+    {id:4,name:'Adobe CC All Apps',cat:'Software',price:15000,sale:12000,stock:55,del:'Manual',active:true,badge:'SALE'},
+    {id:5,name:'Midjourney Basic',cat:'AI Tools',price:2800,sale:'',stock:4,del:'Instant',active:true,badge:''},
+    {id:6,name:'Xbox Game Pass 3M',cat:'Subscriptions',price:8900,sale:'',stock:200,del:'Instant',active:true,badge:'NEW'},
+    {id:7,name:'Spotify Premium 1M',cat:'Subscriptions',price:1200,sale:'',stock:500,del:'Instant',active:true,badge:''},
+    {id:8,name:'Steam Wallet $20',cat:'Gift Cards',price:6200,sale:'',stock:0,del:'Instant',active:false,badge:''},
+    {id:9,name:'Canva Pro 1Y',cat:'Software',price:4500,sale:3800,stock:78,del:'Instant',active:true,badge:'SALE'},
+  ];
+  saveProdLS();
+}
+
+function saveProdLS(){localStorage.setItem('pb_prods',JSON.stringify(PRODS))}
+
+function loadProds(){
+  const q=(document.getElementById('prd-q')?.value||'').toLowerCase();
+  const cat=document.getElementById('prd-cat')?.value||'';
+  const f=PRODS.filter(p=>(!cat||p.cat===cat)&&(!q||p.name.toLowerCase().includes(q)));
+  document.getElementById('prd-tb').innerHTML=f.map(p=>`
+    <tr>
+      <td style="font-weight:600">${esc(p.name)}${p.badge?` <span class="pill pa" style="font-size:10px">${p.badge}</span>`:''}</td>
+      <td><span class="pill pac">${esc(p.cat)}</span></td>
+      <td class="mono">₨${p.price.toLocaleString()}</td>
+      <td class="mono">${p.sale?'₨'+Number(p.sale).toLocaleString():'—'}</td>
+      <td><span class="sk ${p.stock===0?'sk-out':p.stock<=10?'sk-lw':'sk-ok'}">${p.stock===0?'Out of stock':p.stock+' units'}</span></td>
+      <td>${p.active?'<span class="pill pg">Active</span>':'<span class="pill pr">Inactive</span>'}</td>
+      <td><span class="pill ${p.del==='Instant'?'pg':'pa'}">${p.del}</span></td>
+      <td>
+        <button class="btn bi bs" onclick="editProd(${p.id})"><i class="ti ti-edit"></i></button>
+        <button class="btn bi bs bd" onclick="delProd(${p.id})"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`).join('');
+  const el=document.getElementById('prd-cnt');
+  if(el) el.textContent=f.length+' products';
+}
+
+function filterProd(){loadProds()}
+
+let editId=null;
+function openProdModal(){
+  editId=null;
+  document.getElementById('pm-title').textContent='Add New Product';
+  ['pf-name','pf-price','pf-sale','pf-stock','pf-desc'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pf-cat').value='Games';
+  document.getElementById('pf-del').value='Instant';
+  document.getElementById('pf-badge').value='';
+  document.getElementById('pf-active').value='1';
+  document.getElementById('prod-modal').classList.add('open');
+}
+function editProd(id){
+  const p=PRODS.find(x=>x.id===id);if(!p)return;
+  editId=id;
+  document.getElementById('pm-title').textContent='Edit Product';
+  document.getElementById('pf-name').value=p.name;
+  document.getElementById('pf-cat').value=p.cat;
+  document.getElementById('pf-price').value=p.price;
+  document.getElementById('pf-sale').value=p.sale||'';
+  document.getElementById('pf-stock').value=p.stock;
+  document.getElementById('pf-del').value=p.del;
+  document.getElementById('pf-badge').value=p.badge||'';
+  document.getElementById('pf-active').value=p.active?'1':'0';
+  document.getElementById('pf-desc').value=p.desc||'';
+  document.getElementById('prod-modal').classList.add('open');
+}
+function editInvRow(btn){
+  const name=btn.closest('tr').cells[0].textContent.trim();
+  const p=PRODS.find(x=>name.startsWith(x.name));
+  if(p) editProd(p.id); else openProdModal();
+}
+function closeProdModal(){document.getElementById('prod-modal').classList.remove('open')}
+function saveProd(){
+  const name=document.getElementById('pf-name').value.trim();
+  if(!name){toast('⚠ Product name required');return}
+  const prod={
+    name, cat:document.getElementById('pf-cat').value,
+    price:+document.getElementById('pf-price').value||0,
+    sale:document.getElementById('pf-sale').value?+document.getElementById('pf-sale').value:'',
+    stock:+document.getElementById('pf-stock').value||0,
+    del:document.getElementById('pf-del').value,
+    badge:document.getElementById('pf-badge').value,
+    active:document.getElementById('pf-active').value==='1',
+    desc:document.getElementById('pf-desc').value
+  };
+  if(editId){
+    const i=PRODS.findIndex(p=>p.id===editId);
+    PRODS[i]={...PRODS[i],...prod};
+    toast('✅ Product updated');
+  } else {
+    prod.id=Date.now();
+    PRODS.push(prod);
+    toast('✅ Product added');
+  }
+  saveProdLS(); loadProds(); closeProdModal();
+}
+function delProd(id){
+  if(!confirm('Delete this product?'))return;
+  PRODS=PRODS.filter(p=>p.id!==id);
+  saveProdLS(); loadProds(); toast('🗑 Product deleted');
+}
+
+/* ── FILTERS ────────────────────────────────────── */
+function filterInv(){
+  const q=document.getElementById('inv-q').value.toLowerCase();
+  let n=0;
+  document.querySelectorAll('.ir').forEach(r=>{
+    const ok=r.textContent.toLowerCase().includes(q);
+    r.style.display=ok?'':'none';
+    if(ok)n++;
+  });
+  document.getElementById('inv-cnt').textContent=n+' products';
+}
+
+function filterOrd(){
+  const q=(document.getElementById('ord-q')?.value||'').toLowerCase();
+  const st=document.getElementById('ord-st')?.value||'';
+  const gw=document.getElementById('ord-gw')?.value||'';
+  let n=0;
+  document.querySelectorAll('.or').forEach(r=>{
+    const ok=(!q||r.textContent.toLowerCase().includes(q))&&(!st||r.dataset.s===st)&&(!gw||r.dataset.g===gw);
+    r.style.display=ok?'':'none';
+    if(ok)n++;
+  });
+  const e=document.getElementById('ord-cnt');
+  if(e) e.textContent=n+' orders';
+}
+
+function filterCust(){
+  const q=document.getElementById('cst-q').value.toLowerCase();
+  document.querySelectorAll('.cr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none');
+}
+
+function filterSupport(v){
+  document.querySelectorAll('.sp').forEach(r=>r.style.display=(!v||r.dataset.s===v)?'':'none');
+}
+
+/* ── COUPONS ────────────────────────────────────── */
+function openCpnModal(){document.getElementById('cpn-modal').classList.add('open')}
+function closeCpnModal(){document.getElementById('cpn-modal').classList.remove('open')}
+function saveCpn(){
+  const code=document.getElementById('cf-code').value.trim().toUpperCase();
+  if(!code){toast('⚠ Coupon code required');return}
+  const type=document.getElementById('cf-type').value;
+  const val=document.getElementById('cf-val').value;
+  const lim=document.getElementById('cf-lim').value||'∞';
+  const exp=document.getElementById('cf-exp').value||'No expiry';
+  const disp=type==='percent'?val+'%':'₨'+val;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td class="mono" style="font-weight:700;color:var(--gold2)">${code}</td><td>${disp}</td><td><span class="pill ${type==='percent'?'pac':'pgo'}">${type==='percent'?'Percent':'Fixed'}</span></td><td>0</td><td>${lim}</td><td class="mono">${exp}</td><td><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label></td><td><button class="btn bi bs bd" onclick="delRow(this)"><i class="ti ti-trash"></i></button></td>`;
+  document.getElementById('cpn-tb').appendChild(tr);
+  closeCpnModal(); toast('✅ Coupon '+code+' created');
+}
+
+/* ── GATEWAY TOGGLE ─────────────────────────────── */
+function toggleGW(id,el){
+  const card=document.getElementById('gw-'+id);
+  if(!el.checked){card?.classList.add('gw-off');toast('⚠️ '+id+' disabled')}
+  else{card?.classList.remove('gw-off');toast('✅ '+id+' enabled')}
+}
+function testGateways(){toast('🔄 Testing all 5 gateways…');setTimeout(()=>toast('✅ All gateways responded OK'),2200)}
+function saveRules(){toast('✅ Payment rules saved')}
+
+/* ── CUSTOMERS & SUPPORT ────────────────────────── */
+function banCustomer(btn){
+  const name=btn.closest('tr').cells[0].textContent.trim();
+  if(!confirm('Ban '+name+'?'))return;
+  btn.closest('tr').cells[5].innerHTML='<span class="pill pr">Banned</span>';
+  toast('🚫 '+name+' banned');
+}
+function replyTicket(btn,id){
+  const msg=prompt('Reply to ticket '+id+':');
+  if(msg) toast('✉️ Reply sent for '+id);
+}
+function viewOrd(id){toast('👁 Opening order '+id)}
+
+/* ── HOMEPAGE ───────────────────────────────────── */
+function saveHomepage(){
+  localStorage.setItem('pb_hp',JSON.stringify({
+    headline:document.getElementById('hp-hl')?.value,
+    sub:document.getElementById('hp-sub')?.value,
+    badge:document.getElementById('hp-badge')?.value,
+    ticker:document.getElementById('hp-ticker')?.value
+  }));
+  toast('✅ Homepage content saved & published');
+}
+function addBanner(){
+  const t=prompt('Banner text:');if(!t)return;
+  const d=document.createElement('div');
+  d.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(212,175,55,.1)';
+  d.innerHTML=`<span>📢</span><div style="flex:1;font-size:13px">${esc(t)}</div><label class="tgl"><input type="checkbox" checked><div class="tgl-sl"></div></label><button class="btn bi bs bd" onclick="this.parentElement.remove()"><i class="ti ti-x"></i></button>`;
+  document.getElementById('banner-list').appendChild(d);
+}
+
+/* ── STAFF ──────────────────────────────────────── */
+function addStaff(){
+  const name=prompt('Staff member name:');if(!name)return;
+  const email=prompt('Email:');if(!email)return;
+  const role=prompt('Role (Admin / Support):','Support')||'Support';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td style="font-weight:600">${esc(name)}</td><td class="mono" style="color:var(--text2)">${esc(email)}</td><td><span class="pill pb">${esc(role)}</span></td><td><span class="pill pg">Active</span></td><td>Just now</td><td><button class="btn bs bd" onclick="delRow(this)">Remove</button></td>`;
+  document.getElementById('staff-tb').appendChild(tr);
+  toast('✅ '+name+' added as '+role);
+}
+
+/* ── SETTINGS ───────────────────────────────────── */
+function saveSettings(){toast('✅ Settings saved')}
+function changePass(){
+  const cur=document.getElementById('cur-pw').value;
+  const nw=document.getElementById('new-pw').value;
+  const cf=document.getElementById('cf-pw').value;
+  if(cur!==ADMIN_PASS){toast('❌ Current password incorrect');return}
+  if(!nw||nw.length<8){toast('⚠ New password must be 8+ characters');return}
+  if(nw!==cf){toast('❌ Passwords do not match');return}
+  ADMIN_PASS=nw;
+  localStorage.setItem('pb_pw',nw);
+  ['cur-pw','new-pw','cf-pw'].forEach(id=>document.getElementById(id).value='');
+  toast('✅ Password updated successfully');
+}
+
+/* ── AI PROMPT ──────────────────────────────────── */
+function copyPrompt(){
+  navigator.clipboard.writeText(document.getElementById('prompt-txt').value).then(()=>{
+    const b=document.getElementById('copy-btn');
+    b.innerHTML='<i class="ti ti-check"></i> Copied!';
+    setTimeout(()=>b.innerHTML='<i class="ti ti-copy"></i> Copy',2000);
+  });
+}
+function savePrompt(){
+  localStorage.setItem('pb_ai_prompt',document.getElementById('prompt-txt').value);
+  toast('✅ AI prompt saved');
+}
+
+/* ── GENERIC HELPERS ────────────────────────────── */
+function delRow(btn){if(!confirm('Delete this row?'))return;btn.closest('tr').remove();toast('🗑 Deleted')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ── TOAST ──────────────────────────────────────── */
+let _tt;
+function toast(msg){
+  const el=document.getElementById('toast-el');
+  el.innerHTML=msg;
+  el.style.transform='translateY(0)';
+  el.style.opacity='1';
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>{el.style.transform='translateY(90px)';el.style.opacity='0'},3200);
+}
+
+/* ── MODAL CLOSE ON OVERLAY ─────────────────────── */
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+
+/* ── RESTORE SAVED PROMPT ───────────────────────── */
+const _sp=localStorage.getItem('pb_ai_prompt');
+if(_sp) document.getElementById('prompt-txt').value=_sp;
+</script>
+</body>
+</html>

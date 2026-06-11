@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Cards — PlayBeat Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Orbitron:wght@400;600;700;800;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       FINTECH ANALYTICS PLATFORM — ULTRA DARK THEME
+       Inspired by: Fintech Landing Page / Finance Analytical Platform
+       Palette: Deep charcoal #060d1a · Navy #0a1628 · Surface #0e1e36
+       Accent: Electric cyan #00d4ff · Teal glow #00ffcc · Amber alert #f5a623
+       ═══════════════════════════════════════════════════════════ */
+
+    /* ── CSS Variables ─────────────────────────────────────── */
+    :root {
+      --bg-base:        #060d1a;
+      --bg-surface:     #0a1628;
+      --bg-panel:       #0e1e36;
+      --bg-glass:       rgba(14,30,54,.82);
+      --border-dim:     rgba(0,212,255,.08);
+      --border-mid:     rgba(0,212,255,.18);
+      --border-bright:  rgba(0,212,255,.42);
+      --accent-cyan:    #00d4ff;
+      --accent-teal:    #00ffcc;
+      --accent-amber:   #f5a623;
+      --accent-purple:  #7c6fff;
+      --text-primary:   #e4f0ff;
+      --text-secondary: #6a8fb5;
+      --text-dim:       #2e4a6e;
+      --glow-cyan:      0 0 18px rgba(0,212,255,.35);
+      --glow-teal:      0 0 18px rgba(0,255,204,.3);
+      --glow-amber:     0 0 14px rgba(245,166,35,.3);
+    }
+
+    /* ── Page Hero ─────────────────────────────────────────── */
+    .page-hero {
+      background:
+        radial-gradient(ellipse 80% 60% at 60% -20%, rgba(0,212,255,.06) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 100% 80%, rgba(0,255,204,.04) 0%, transparent 60%),
+        linear-gradient(175deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 3rem 0 2.5rem;
+      position: relative; overflow: hidden;
+    }
+
+    /* grid-dot pattern overlay */
+    .page-hero::before {
+      content:'';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse 80% 90% at 50% 50%, black 30%, transparent 80%);
+      pointer-events: none;
+    }
+
+    /* cyan accent bar on left edge */
+    .page-hero::after {
+      content:'';
+      position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+      background: linear-gradient(180deg, transparent, var(--accent-cyan), var(--accent-teal), transparent);
+      pointer-events: none;
+    }
+
+    .page-hero-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+      position: relative; z-index: 1;
+    }
+    .page-hero-left { flex: 1; }
+
+    .page-hero-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--accent-cyan);
+      border: 1px solid var(--border-bright);
+      background: rgba(0,212,255,.07);
+      padding: 5px 14px 5px 10px; border-radius: 2px;
+      margin-bottom: 18px;
+      box-shadow: var(--glow-cyan), inset 0 0 12px rgba(0,212,255,.04);
+    }
+    .page-hero-tag::before {
+      content: '';
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.5; transform:scale(.75); }
+    }
+
+    .page-hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; line-height: 1.15;
+      color: var(--text-primary); margin-bottom: 14px;
+      letter-spacing: -.5px;
+      text-shadow: 0 0 40px rgba(0,212,255,.15);
+    }
+    .page-hero h1 span { color: var(--accent-cyan); }
+
+    .page-hero p {
+      font-family: 'Exo 2', sans-serif;
+      color: var(--text-secondary); font-size: 15px; line-height: 1.75; max-width: 480px;
+    }
+
+    .page-hero-right {
+      display: flex; flex-direction: column; gap: 10px;
+      align-items: flex-end; flex-shrink: 0;
+    }
+
+    .hero-stat {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-mid);
+      border-radius: 6px; padding: 12px 22px; text-align: center; min-width: 130px;
+      backdrop-filter: blur(12px);
+      position: relative; overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .hero-stat::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+    }
+    .hero-stat:hover {
+      border-color: var(--border-bright);
+      box-shadow: var(--glow-cyan);
+    }
+    .hero-stat b {
+      display: block; font-family: 'Orbitron', sans-serif;
+      font-size: 20px; font-weight: 700; color: var(--accent-cyan);
+      text-shadow: 0 0 12px rgba(0,212,255,.5);
+    }
+    .hero-stat span { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; }
+
+    /* ── Filter Bar ────────────────────────────────────────── */
+    .filter-bar {
+      background: rgba(6,13,26,.96);
+      border-bottom: 1px solid var(--border-dim);
+      border-top: 1px solid var(--border-dim);
+      position: sticky; top: 0; z-index: 20; padding: .75rem 0;
+      backdrop-filter: blur(16px) saturate(1.4);
+    }
+    .filter-bar-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .filter-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 9.5px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-dim); white-space: nowrap;
+    }
+    .filter-select {
+      background: rgba(10,22,40,.95); border: 1px solid var(--border-mid);
+      color: var(--text-secondary); font-family: 'Exo 2', sans-serif; font-size: 12px;
+      padding: 7px 12px; border-radius: 4px; cursor: pointer; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .filter-select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px rgba(0,212,255,.12); }
+    .filter-search {
+      flex: 1; min-width: 180px; max-width: 320px;
+      background: rgba(10,22,40,.95); border: 1px solid var(--border-mid);
+      color: var(--text-primary); font-family: 'Exo 2', sans-serif; font-size: 12px;
+      padding: 7px 14px; border-radius: 4px; outline: none; transition: border-color .15s, box-shadow .15s;
+    }
+    .filter-search:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px rgba(0,212,255,.12); }
+    .filter-search::placeholder { color: var(--text-dim); }
+    .result-count {
+      margin-left: auto; font-family: 'Share Tech Mono', monospace;
+      font-size: 9.5px; color: var(--text-dim); letter-spacing: 1.5px; white-space: nowrap;
+    }
+
+    /* ── Products Section ──────────────────────────────────── */
+    .products-section {
+      max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+    }
+    .products-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;
+    }
+    .products-title {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-secondary);
+    }
+    .view-toggle { display: flex; gap: 5px; }
+    .view-btn {
+      background: rgba(0,212,255,.05); border: 1px solid var(--border-dim);
+      color: var(--text-dim); padding: 6px 11px; border-radius: 4px; cursor: pointer;
+      font-size: 13px; transition: all .15s;
+    }
+    .view-btn.active {
+      color: var(--accent-cyan); border-color: var(--border-bright);
+      background: rgba(0,212,255,.08);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Product Card — Fintech Analytics style ────────────── */
+    .product-card {
+      background: linear-gradient(160deg, var(--bg-panel) 0%, rgba(8,15,30,.98) 100%);
+      border: 1px solid var(--border-dim); border-radius: 8px; overflow: hidden;
+      display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      transition: transform .22s cubic-bezier(.25,.8,.25,1),
+                  border-color .22s, box-shadow .22s;
+      position: relative;
+    }
+
+    /* top cyan data-line accent */
+    .product-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 50%, transparent 100%);
+      opacity: 0; transition: opacity .22s;
+    }
+    .product-card:hover::before { opacity: 1; }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,212,255,.3);
+      box-shadow:
+        0 0 0 1px rgba(0,212,255,.08),
+        0 8px 32px rgba(0,0,0,.55),
+        0 0 24px rgba(0,212,255,.1);
+    }
+
+    .product-card-img {
+      width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+
+    /* scanline overlay on card images */
+    .product-card-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,.0) 0px, rgba(0,0,0,.0) 2px,
+        rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px
+      );
+      pointer-events: none;
+    }
+
+    .pc-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: linear-gradient(90deg, rgba(0,212,255,.95), rgba(0,255,204,.8));
+      color: #020a16; font-family: 'Share Tech Mono', monospace;
+      font-size: 8.5px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 2px;
+      box-shadow: 0 0 12px rgba(0,212,255,.55);
+    }
+
+    .product-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .product-card-game {
+      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2px;
+      color: var(--accent-teal); text-transform: uppercase;
+      opacity: .8;
+    }
+    .product-card-name {
+      font-family: 'Exo 2', sans-serif; font-size: 12.5px; font-weight: 600;
+      color: var(--text-primary); line-height: 1.45; flex: 1;
+    }
+    .pc-rating { font-size: 11px; color: var(--accent-cyan); }
+    .pc-rev { color: var(--text-dim); font-size: 10px; }
+    .product-card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: auto !important; }
+    .pc-price {
+      font-family: 'Share Tech Mono', monospace; font-size: 14px; font-weight: 700;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 10px rgba(0,212,255,.4);
+    }
+    .pc-old { font-size: 10.5px; color: var(--text-dim); text-decoration: line-through; }
+    .pc-cart-btn {
+      margin-left: auto;
+      background: rgba(0,212,255,.07);
+      border: 1px solid rgba(0,212,255,.28);
+      color: var(--accent-cyan);
+      font-size: 9px; font-weight: 700; letter-spacing: 1px;
+      padding: 5px 11px; border-radius: 3px; cursor: pointer; transition: all .18s;
+      text-transform: uppercase; font-family: 'Share Tech Mono', monospace;
+    }
+    .pc-cart-btn:hover {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
+      color: #020a16; border-color: transparent;
+      box-shadow: 0 0 16px rgba(0,212,255,.45);
+    }
+
+    /* ── Trust Strip ───────────────────────────────────────── */
+    .trust-strip {
+      background: rgba(6,13,26,.92);
+      border-top: 1px solid var(--border-dim);
+      border-bottom: 1px solid var(--border-dim);
+      padding: .7rem 0; margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .trust-strip-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; align-items: center; gap: 28px; overflow-x: auto;
+    }
+    .ts-item { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+    .ts-ico { font-size: 13px; }
+    .ts-text {
+      font-family: 'Share Tech Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px;
+      color: var(--text-dim); text-transform: uppercase;
+    }
+
+    /* ── Cart Toast ────────────────────────────────────────── */
+    .cart-toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: var(--bg-panel);
+      border: 1px solid rgba(0,212,255,.3);
+      color: var(--text-primary); padding: 12px 20px; border-radius: 6px; font-size: 13px;
+      opacity: 0; transform: translateY(10px); transition: all .3s; pointer-events: none;
+      font-family: 'Exo 2', sans-serif; max-width: 300px;
+      box-shadow: var(--glow-cyan), 0 8px 32px rgba(0,0,0,.6);
+      backdrop-filter: blur(12px);
+    }
+    .cart-toast::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+    }
+    .cart-toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════════════════════
+       GLOBAL RESET & BASE
+       ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Exo 2', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; }
+
+    /* ═══════════════════════════════════════════════════════════
+       TICKER BAR
+       ═══════════════════════════════════════════════════════════ */
+    .ticker-bar {
+      background: linear-gradient(90deg, rgba(0,212,255,.08) 0%, rgba(0,255,204,.06) 50%, rgba(0,212,255,.08) 100%);
+      border-bottom: 1px solid var(--border-mid);
+      overflow: hidden; white-space: nowrap; height: 32px;
+      display: flex; align-items: center;
+      position: relative;
+    }
+    .ticker-bar::before,
+    .ticker-bar::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+    }
+    .ticker-bar::before { left: 0; background: linear-gradient(90deg, var(--bg-base), transparent); }
+    .ticker-bar::after  { right: 0; background: linear-gradient(-90deg, var(--bg-base), transparent); }
+    .ticker-inner {
+      display: inline-flex; gap: 48px; align-items: center;
+      animation: ticker-scroll 28s linear infinite;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 1.2px; color: var(--text-secondary);
+    }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .t-live {
+      display: inline-flex; align-items: center; gap: 7px;
+      color: var(--accent-cyan); font-weight: 700; letter-spacing: 2px;
+    }
+    .pulse {
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+      animation: pulse-dot 1.4s ease-in-out infinite;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════════ */
+    header {
+      background:
+        linear-gradient(180deg, rgba(6,13,26,.99) 0%, rgba(10,22,40,.98) 100%);
+      border-bottom: 1px solid var(--border-dim);
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(20px) saturate(1.6);
+    }
+
+    /* HUD corner brackets */
+    .hud-c { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .hc {
+      position: absolute; width: 10px; height: 10px;
+      border-color: rgba(0,212,255,.35); border-style: solid;
+    }
+    .hc-tl { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+    .hc-tr { top: 6px; right: 6px; border-width: 1px 1px 0 0; }
+    .hc-bl { bottom: 6px; left: 6px; border-width: 0 0 1px 1px; }
+    .hc-br { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    /* Header top strip — search + actions */
+    .header-top {
+      border-bottom: 1px solid var(--border-dim);
+      padding: .55rem 0;
+    }
+    .header-top-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .search-wrap { flex: 1; max-width: 680px; }
+    .search-bar {
+      display: flex; align-items: center;
+      background: rgba(10,22,40,.95);
+      border: 1px solid var(--border-mid);
+      border-radius: 5px; overflow: hidden;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .search-bar:focus-within {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px rgba(0,212,255,.1), var(--glow-cyan);
+    }
+    .search-category {
+      background: rgba(0,212,255,.06); border: none; border-right: 1px solid var(--border-dim);
+      color: var(--text-secondary); font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 1px; padding: 8px 10px;
+      outline: none; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .search-ico {
+      color: var(--text-dim); padding: 0 8px; flex-shrink: 0; display: flex; align-items: center;
+    }
+    .search-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text-primary); font-family: 'Exo 2', sans-serif; font-size: 13px;
+      padding: 8px 10px;
+    }
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg, rgba(0,212,255,.15), rgba(0,255,204,.1));
+      border: none; border-left: 1px solid var(--border-mid);
+      color: var(--accent-cyan); font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase;
+      padding: 8px 16px; transition: background .18s, color .18s;
+      flex-shrink: 0;
+    }
+    .search-btn:hover {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal));
+      color: #020a16;
+    }
+    .top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-wish {
+      background: rgba(0,212,255,.05); border: 1px solid var(--border-dim);
+      color: var(--text-secondary); border-radius: 5px; padding: 7px 10px;
+      display: flex; align-items: center; transition: all .18s;
+    }
+    .btn-wish:hover { color: #e05; border-color: rgba(220,0,80,.4); background: rgba(220,0,80,.06); }
+    .btn-login {
+      background: transparent; border: 1px solid var(--border-mid);
+      color: var(--text-secondary); font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 7px 16px; border-radius: 4px; transition: all .18s;
+    }
+    .btn-login:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+    .btn-prime {
+      background: linear-gradient(90deg, rgba(0,212,255,.9), rgba(0,255,204,.85));
+      border: none; color: #020a16; font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 1.5px; font-weight: 700; text-transform: uppercase;
+      padding: 8px 18px; border-radius: 4px;
+      box-shadow: 0 0 18px rgba(0,212,255,.3);
+      transition: box-shadow .18s, opacity .18s;
+    }
+    .btn-prime:hover { box-shadow: 0 0 28px rgba(0,212,255,.55); opacity: .92; }
+
+    /* Main header row — logo + nav */
+    .header-inner {
+      max-width: 1280px; margin: 0 auto; padding: .6rem 1.5rem;
+      display: flex; align-items: center; gap: 32px;
+      position: relative; z-index: 1;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex; flex-direction: column; gap: 0;
+      text-decoration: none; flex-shrink: 0; position: relative;
+    }
+    .logo-digital {
+      font-family: 'Share Tech Mono', monospace; font-size: 7px;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--accent-teal);
+      opacity: .8;
+    }
+    .logo-wordmark { display: flex; align-items: baseline; gap: 0; line-height: 1; }
+    .logo-play {
+      font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+      color: var(--text-primary); letter-spacing: -1px;
+    }
+    .logo-beat {
+      font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+      color: var(--accent-cyan); letter-spacing: -1px;
+      text-shadow: 0 0 16px rgba(0,212,255,.5);
+    }
+    .logo-underline {
+      height: 1px; margin-top: 3px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal), transparent);
+    }
+
+    /* Nav */
+    nav { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+    .nav-item {
+      font-family: 'Share Tech Mono', monospace; font-size: 10.5px; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-secondary);
+      padding: 6px 10px; border-radius: 4px;
+      border: 1px solid transparent;
+      transition: color .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .nav-item:hover { color: var(--accent-cyan); border-color: var(--border-dim); background: rgba(0,212,255,.04); }
+    .nav-item.active {
+      color: var(--accent-cyan); border-color: var(--border-bright);
+      background: rgba(0,212,255,.07);
+      box-shadow: 0 0 10px rgba(0,212,255,.12);
+    }
+    .nav-sep {
+      width: 1px; height: 16px; background: var(--border-dim); margin: 0 4px; flex-shrink: 0;
+    }
+    .nav-special {
+      color: #ff6b35 !important;
+      border-color: rgba(255,107,53,.2) !important;
+      background: rgba(255,107,53,.05) !important;
+    }
+    .nav-special:hover { border-color: rgba(255,107,53,.5) !important; background: rgba(255,107,53,.1) !important; }
+    .nav-outsource {
+      color: var(--accent-teal) !important;
+      border-color: rgba(0,255,204,.2) !important;
+      background: rgba(0,255,204,.05) !important;
+    }
+    .nav-outsource:hover { border-color: rgba(0,255,204,.45) !important; background: rgba(0,255,204,.1) !important; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════ */
+    .site-footer {
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 100%, rgba(0,212,255,.04) 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+      border-top: 1px solid var(--border-dim);
+      position: relative; overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    /* Footer HUD corners */
+    .f-hud { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .f-hc {
+      position: absolute; width: 12px; height: 12px;
+      border-color: rgba(0,212,255,.25); border-style: solid;
+    }
+    .f-hc-tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+    .f-hc-tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+    .f-hc-bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+    .f-hc-br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+    /* top glow line */
+    .site-footer::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-teal), transparent);
+      opacity: .5;
+    }
+
+    .footer-inner {
+      max-width: 1280px; margin: 0 auto; padding: 3rem 1.5rem 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    /* Footer banner row — logo + support */
+    .footer-banner {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 2rem; margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    /* Footer logo */
+    .footer-logo { display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
+    .footer-logo-digital {
+      font-family: 'Share Tech Mono', monospace; font-size: 7px;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--accent-teal); opacity: .7;
+    }
+    .footer-logo-wordmark { display: flex; align-items: baseline; gap: 0; }
+    .footer-logo-play {
+      font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900;
+      color: var(--text-primary);
+    }
+    .footer-logo-beat {
+      font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900;
+      color: var(--accent-cyan); text-shadow: 0 0 16px rgba(0,212,255,.45);
+    }
+    .footer-logo-pvt {
+      font-family: 'Share Tech Mono', monospace; font-size: 7.5px;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim);
+      margin-top: 2px; padding-left: 2px;
+    }
+    .footer-logo-line {
+      height: 1px; margin-top: 6px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal), transparent);
+    }
+    .footer-tagline {
+      font-family: 'Exo 2', sans-serif; font-size: 12px; color: var(--text-dim);
+      margin-top: 10px; letter-spacing: .3px;
+    }
+    .ft-play { color: var(--text-secondary); }
+    .ft-beat { color: var(--accent-cyan); }
+
+    /* Support buttons */
+    .footer-support { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+    .support-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 9px;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim);
+    }
+    .btn-support {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 8px 18px; border-radius: 4px; border: 1px solid var(--border-mid);
+      transition: all .18s; min-width: 140px;
+      background: rgba(10,22,40,.9);
+    }
+    .btn-support.email   { color: var(--accent-cyan); }
+    .btn-support.whatsapp { color: #25d366; border-color: rgba(37,211,102,.25); }
+    .btn-support.telegram { color: #2aabee; border-color: rgba(42,171,238,.25); }
+    .btn-support:hover {
+      background: rgba(0,212,255,.08); border-color: var(--border-bright);
+      box-shadow: var(--glow-cyan);
+    }
+    .btn-support.whatsapp:hover { background: rgba(37,211,102,.08); border-color: rgba(37,211,102,.5); box-shadow: 0 0 14px rgba(37,211,102,.2); }
+    .btn-support.telegram:hover { background: rgba(42,171,238,.08); border-color: rgba(42,171,238,.5); box-shadow: 0 0 14px rgba(42,171,238,.2); }
+
+    /* Footer grid — 4 columns */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 2rem; margin-bottom: 2.5rem;
+    }
+    .footer-col-title {
+      font-family: 'Share Tech Mono', monospace; font-size: 9.5px;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent-cyan);
+      margin-bottom: 14px; opacity: .85;
+    }
+    .footer-nav-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+    }
+    .footer-nav-link {
+      font-family: 'Exo 2', sans-serif; font-size: 12px;
+      color: var(--text-secondary); padding: 4px 0;
+      transition: color .15s; white-space: nowrap;
+    }
+    .footer-nav-link:hover { color: var(--accent-cyan); }
+    .footer-nav-link.special { color: #ff6b35 !important; }
+    .footer-link-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-link-list a {
+      font-family: 'Exo 2', sans-serif; font-size: 12px;
+      color: var(--text-secondary); transition: color .15s;
+    }
+    .footer-link-list a:hover { color: var(--accent-cyan); }
+
+    /* Newsletter inline overrides */
+    .footer-col p { color: var(--text-secondary) !important; }
+    .footer-col [style*="border:1px solid rgba(245"] {
+      border-color: var(--border-bright) !important;
+    }
+    .footer-col input[type="email"] {
+      background: rgba(10,22,40,.9) !important; color: var(--text-primary) !important;
+    }
+    .footer-col button {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-teal)) !important;
+      color: #020a16 !important;
+    }
+
+    /* Footer bottom bar */
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border-dim);
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-family: 'Share Tech Mono', monospace; font-size: 9.5px;
+      letter-spacing: 1px; color: var(--text-dim);
+    }
+    .footer-copy strong { color: var(--text-secondary); }
+    .footer-legal-links {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Share Tech Mono', monospace; font-size: 9.5px; letter-spacing: 1px;
+    }
+    .footer-legal-links a { color: var(--text-dim); transition: color .15s; }
+    .footer-legal-links a:hover { color: var(--accent-cyan); }
+    .footer-legal-links span { color: var(--text-dim); opacity: .4; }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .page-hero-right { display: none; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .header-top-inner { flex-wrap: wrap; gap: 8px; }
+      .search-wrap { max-width: 100%; width: 100%; order: 2; }
+      .top-actions { order: 1; margin-left: auto; }
+      nav { gap: 1px; }
+      .nav-item { font-size: 9px; padding: 5px 7px; }
+      .footer-banner { flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+
+  <!-- TICKER -->
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <span class="t-live"><span class="pulse"></span>LIVE DEALS</span>
+      <span>🎁 Steam Wallet $50 — PKR 14,999 &nbsp;⚡ PSN PKR 5000 — PKR 5,299 &nbsp;🔥 Xbox 1200 Points — PKR 4,499 &nbsp;💎 Google Play $25 — PKR 7,499</span>
+      <span class="t-live"><span class="pulse"></span>LIVE DEALS</span>
+      <span>🎁 Steam Wallet $50 — PKR 14,999 &nbsp;⚡ PSN PKR 5000 — PKR 5,299 &nbsp;🔥 Xbox 1200 Points — PKR 4,499 &nbsp;💎 Google Play $25 — PKR 7,499</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="hud-c">
+      <div class="hc hc-tl"></div><div class="hc hc-tr"></div>
+      <div class="hc hc-bl"></div><div class="hc hc-br"></div>
+    </div>
+    <div class="header-top">
+      <div class="header-top-inner">
+        <div class="search-wrap">
+          <div class="search-bar">
+            <select class="search-category">
+              <option value="all">All</option>
+              <option value="games">Games</option>
+              <option value="ai">AI Tools</option>
+              <option value="software">Software</option>
+              <option value="giftcards">Gift Cards</option>
+              <option value="subs">Subscriptions</option>
+              <option value="topup">Top Up</option>
+              <option value="items">Game Items</option>
+              <option value="accounts">Accounts</option>
+            </select>
+            <span class="search-ico" aria-hidden="true">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input class="search-input" type="text" placeholder="Search games, AI tools, subscriptions…" autocomplete="off" />
+            <button class="search-btn" onclick="doSearch()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Search
+            </button>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn-wish" aria-label="Wishlist" onclick="wishlist()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </button>
+          <button class="btn-login" onclick="signIn()">Sign In</button>
+          <button class="btn-prime" onclick="joinPlayBeat()">✦ Join PlayBeat</button>
+        </div>
+      </div>
+    </div>
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-label="PlayBeat Digital home">
+        <span class="logo-digital">Digital</span>
+        <div class="logo-wordmark">
+          <span class="logo-play">play</span><span class="logo-beat">beat</span>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:#3d5a88;margin-top:1px;padding-left:2px;">Digital Pvt Ltd</div>
+        <div class="logo-underline"></div>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="index.html" class="nav-item">Home</a>
+      <a href="games.html" class="nav-item">Games</a>
+      <a href="gift-cards.html" class="nav-item active">Gift Cards</a>
+      <a href="software.html" class="nav-item">Software</a>
+      <a href="ai-tools.html" class="nav-item">AI Tools</a>
+      <a href="game-items.html" class="nav-item">Game Items</a>
+      <a href="accounts.html" class="nav-item">Accounts</a>
+      <a href="subscriptions.html" class="nav-item">Subscriptions</a>
+      <a href="top-up.html" class="nav-item">Top Up</a>
+      <div class="nav-sep" aria-hidden="true"></div>
+      <a href="trending.html" class="nav-item nav-special">🔥 Trending</a>
+      <a href="best-value.html" class="nav-item nav-outsource">💎 Global</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="page-hero-left">
+        <div class="page-hero-tag">🎁 Instant Digital Delivery</div>
+        <h1>Gift Cards for<br>Every Platform</h1>
+        <p>Steam, PlayStation, Xbox, Amazon, Google Play, iTunes — all regions, all denominations</p>
+      </div>
+      <div class="page-hero-right">
+        <div class="hero-stat"><b>PKR</b><span>Default Currency</span></div>
+        <div class="hero-stat"><b>⚡</b><span>Instant Delivery</span></div>
+        <div class="hero-stat"><b>12+</b><span>Products Listed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-bar-inner">
+      <span class="filter-label">Platform:</span>
+      <select class="filter-select" id="filter-cat" onchange="filterProducts()">
+        <option value="all-platforms">All Platforms</option>
+<option value="steam">Steam</option>
+<option value="playstation">PlayStation</option>
+<option value="xbox">Xbox</option>
+<option value="google-play">Google Play</option>
+<option value="apple-/-itunes">Apple / iTunes</option>
+<option value="amazon">Amazon</option>
+<option value="razer-gold">Razer Gold</option>
+<option value="paysafecard">Paysafecard</option>
+      </select>
+      <span class="filter-label">Region:</span>
+      <select class="filter-select" id="filter-sort" onchange="sortProducts()">
+        <option value="all-regions">All Regions</option>
+<option value="global">Global</option>
+<option value="usa">USA</option>
+<option value="europe">Europe</option>
+<option value="pakistan">Pakistan</option>
+<option value="asia">Asia</option>
+<option value="uk">UK</option>
+<option value="middle-east">Middle East</option>
+      </select>
+      <input class="filter-search" type="text" id="filter-search" placeholder="Search in Gift Cards…" oninput="filterProducts()" />
+      <span class="result-count" id="result-count">Showing 12 products</span>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip">
+    <div class="trust-strip-inner">
+      <div class="ts-item"><span class="ts-ico">⚡</span><span class="ts-text">Instant Delivery</span></div>
+      <div class="ts-item"><span class="ts-ico">🛡️</span><span class="ts-text">Buyer Protection</span></div>
+      <div class="ts-item"><span class="ts-ico">💳</span><span class="ts-text">JazzCash · Stripe · Alfalah · Meezan</span></div>
+      <div class="ts-item"><span class="ts-ico">💬</span><span class="ts-text">24/7 WhatsApp Support</span></div>
+      <div class="ts-item"><span class="ts-ico">🌍</span><span class="ts-text">Pakistan Prices in PKR</span></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="products-section">
+    <div class="products-header">
+      <span class="products-title">🎁 Gift Cards — Digital gift cards for gaming platforms, streaming, shopping & more — instant delivery</span>
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="setView('grid',this)" title="Grid view">⊞</button>
+        <button class="view-btn" onclick="setView('list',this)" title="List view">☰</button>
+      </div>
+    </div>
+    <div class="products-grid" id="products-grid">
+      
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(0,40%,12%) 0%,hsl(40,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">♻️</span>
+          <div class="pc-badge">POPULAR</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Steam</div>
+          <div class="product-card-name">Steam Wallet — $10 USD Global</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(4.2k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 2,999</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(37,40%,12%) 0%,hsl(77,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">♻️</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Steam</div>
+          <div class="product-card-name">Steam Wallet — $50 USD Global</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(2.8k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 14,999</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(74,40%,12%) 0%,hsl(114,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🎮</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">PlayStation</div>
+          <div class="product-card-name">PlayStation PSN — PKR 5000</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(1.9k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 5,299</span>
+            <span class="pc-old">PKR 5,499</span>
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(111,40%,12%) 0%,hsl(151,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🎮</span>
+          <div class="pc-badge">SALE</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">PlayStation</div>
+          <div class="product-card-name">PlayStation PSN — $20 USD</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(1.4k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 5,999</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(148,40%,12%) 0%,hsl(188,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🟩</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Xbox</div>
+          <div class="product-card-name">Xbox — 1200 Microsoft Points</div>
+          <div class="pc-rating">★★★★½ <span class="pc-rev">(890)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 4,499</span>
+            <span class="pc-old">PKR 4,999</span>
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(185,40%,12%) 0%,hsl(225,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">📱</span>
+          <div class="pc-badge">HOT</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Google Play</div>
+          <div class="product-card-name">Google Play — $25 USD Global</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(1.1k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 7,499</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(222,40%,12%) 0%,hsl(262,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🍎</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Apple</div>
+          <div class="product-card-name">iTunes / Apple Gift Card — $15</div>
+          <div class="pc-rating">★★★★½ <span class="pc-rev">(670)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 4,499</span>
+            <span class="pc-old">PKR 4,799</span>
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(259,40%,12%) 0%,hsl(299,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🛒</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Amazon</div>
+          <div class="product-card-name">Amazon Gift Card — $25 USA</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(940)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 7,299</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(296,40%,12%) 0%,hsl(336,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🦸</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Razer</div>
+          <div class="product-card-name">Razer Gold — $10 Global</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(720)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 2,999</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(333,40%,12%) 0%,hsl(13,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🎯</span>
+          <div class="pc-badge">CHEAP</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Garena</div>
+          <div class="product-card-name">Garena Shell — 70 Shells</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(3.1k)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 599</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(10,40%,12%) 0%,hsl(50,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">💳</span>
+          
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Paysafe</div>
+          <div class="product-card-name">Paysafecard — €10 Europe</div>
+          <div class="pc-rating">★★★★½ <span class="pc-rev">(480)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 3,499</span>
+            
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="product-card" onclick="addToCart(this,event)">
+        <div class="product-card-img" style="background: linear-gradient(135deg,hsl(47,40%,12%) 0%,hsl(87,50%,20%) 100%);">
+          <span style="font-size:48px;line-height:1">🛡️</span>
+          <div class="pc-badge">SALE</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-game">Blizzard</div>
+          <div class="product-card-name">Battle.net — $20 Balance</div>
+          <div class="pc-rating">★★★★★ <span class="pc-rev">(560)</span></div>
+          <div class="product-card-meta" style="margin-top:8px;">
+            <span class="pc-price">PKR 5,999</span>
+            <span class="pc-old">PKR 6,499</span>
+            <button class="pc-cart-btn" onclick="addToCart(this,event)">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="f-hud">
+      <div class="f-hc f-hc-tl"></div><div class="f-hc f-hc-tr"></div>
+      <div class="f-hc f-hc-bl"></div><div class="f-hc f-hc-br"></div>
+    </div>
+    <div class="footer-inner">
+      <div class="footer-banner">
+        <a class="footer-logo" href="index.html" aria-label="PlayBeat Digital home">
+          <span class="footer-logo-digital">Digital</span>
+          <div class="footer-logo-wordmark">
+            <span class="footer-logo-play">play</span><span class="footer-logo-beat">beat</span>
+          </div>
+          <div class="footer-logo-pvt">Digital Pvt Ltd</div>
+          <div class="footer-logo-line"></div>
+          <p class="footer-tagline">Driven by <span class="ft-play">Play</span>, Defined by <span class="ft-beat">beat.</span></p>
+        </a>
+        <div class="footer-support">
+          <span class="support-label">Support</span>
+          <a class="btn-support email" href="mailto:support@playbeat.gg">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            Email
+          </a>
+          <a class="btn-support whatsapp" href="https://wa.me/923318333368" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            WhatsApp
+          </a>
+          <a class="btn-support telegram" href="https://t.me/playbeat" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Telegram
+          </a>
+        </div>
+      </div>
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3 class="footer-col-title">Marketplace</h3>
+          <div class="footer-nav-grid">
+            <a href="index.html" class="footer-nav-link">🏠 Home</a>
+            <a href="games.html" class="footer-nav-link">🎮 Games</a>
+            <a href="gift-cards.html" class="footer-nav-link">🎁 Gift Cards</a>
+            <a href="software.html" class="footer-nav-link">💻 Software</a>
+            <a href="ai-tools.html" class="footer-nav-link">🤖 AI Tools</a>
+            <a href="game-items.html" class="footer-nav-link">⚔️ Game Items</a>
+            <a href="accounts.html" class="footer-nav-link">👤 Accounts</a>
+            <a href="subscriptions.html" class="footer-nav-link">📺 Subscriptions</a>
+            <a href="top-up.html" class="footer-nav-link">💎 Top Up</a>
+            <a href="trending.html" class="footer-nav-link special">🔥 Trending</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Discover</h3>
+          <ul class="footer-link-list">
+            <li><a href="trending.html">🔥 Trending</a></li>
+            <li><a href="best-value.html">💎 Best Value</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Legal</h3>
+          <ul class="footer-link-list">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="refund.html">Refund Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-title">Newsletter</h3>
+          <p style="font-family:'Exo 2',sans-serif;font-size:11.5px;color:#3d5a88;line-height:1.75;margin-bottom:14px;">Get exclusive deals, flash sales, and new arrivals straight to your inbox.</p>
+          <div style="display:flex;gap:0;border:1px solid rgba(245,166,35,0.22);border-radius:3px;overflow:hidden;">
+            <input type="email" placeholder="your@email.com" style="flex:1;background:rgba(8,20,44,.85);border:none;color:#e2ecff;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.8px;padding:9px 12px;outline:none;" />
+            <button style="background:linear-gradient(135deg,#8a5400,#c07800,#f5a623);border:none;color:#020a16;padding:9px 14px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© <span id="yr"></span> <strong>PlayBeat Digital</strong> — All rights reserved. Prices in PKR.</p>
+        <nav class="footer-legal-links" aria-label="Legal">
+          <a href="privacy.html">Privacy</a><span aria-hidden="true">·</span>
+          <a href="terms.html">Terms</a><span aria-hidden="true">·</span>
+          <a href="refund.html">Refunds</a><span aria-hidden="true">·</span>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Toast -->
+  <div class="cart-toast" id="cartToast"></div>
+
+  <script src="shared.js"></script>
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // ── Cart ────────────────────────────────────────────────
+    let cartCount = parseInt(localStorage.getItem('pb_cart_count') || '0');
+
+    function addToCart(el, e) {
+      e && e.preventDefault();
+      // Find nearest product card
+      const card = el.closest('.product-card') || el;
+      const name = card.querySelector('.product-card-name')?.textContent || 'Item';
+      const price = card.querySelector('.pc-price')?.textContent || '';
+      cartCount++;
+      localStorage.setItem('pb_cart_count', cartCount);
+      showCartToast(name, price);
+    }
+
+    function showCartToast(name, price) {
+      const t = document.getElementById('cartToast');
+      t.textContent = `✅ Added: ${name} — ${price}`;
+      t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ── Filter & Search ─────────────────────────────────────
+    function filterProducts() {
+      const search = document.getElementById('filter-search').value.toLowerCase();
+      const cards = document.querySelectorAll('.product-card');
+      let visible = 0;
+      cards.forEach(c => {
+        const name = c.querySelector('.product-card-name')?.textContent.toLowerCase() || '';
+        const cat = c.querySelector('.product-card-game')?.textContent.toLowerCase() || '';
+        const show = !search || name.includes(search) || cat.includes(search);
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('result-count').textContent = `Showing ${visible} products`;
+    }
+
+    function sortProducts() {
+      const val = document.getElementById('filter-sort').value;
+      const grid = document.getElementById('products-grid');
+      const cards = Array.from(grid.querySelectorAll('.product-card'));
+      cards.sort((a, b) => {
+        if (val === 'price:-low-to-high' || val === 'price:-low-to-high') {
+          const pa = parseInt(a.querySelector('.pc-price')?.textContent.replace(/[^\d]/g,'') || '0');
+          const pb = parseInt(b.querySelector('.pc-price')?.textContent.replace(/[^\d]/g,'') || '0');
+          return pa - pb;
+        }
+        if (val === 'price:-high-to-low') {
+          const pa = parseInt(a.querySelector('.pc-price')?.textContent.replace(/[^\d]/g,'') || '0');
+          const pb = parseInt(b.querySelector('.pc-price')?.textContent.replace(/[^\d]/g,'') || '0');
+          return pb - pa;
+        }
+        return 0;
+      });
+      cards.forEach(c => grid.appendChild(c));
+    }
+
+    // ── View Toggle ─────────────────────────────────────────
+    function setView(type, btn) {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const grid = document.getElementById('products-grid');
+      if (type === 'list') {
+        grid.style.gridTemplateColumns = '1fr';
+      } else {
+        grid.style.gridTemplateColumns = '';
+      }
+    }
+
+    // ── Auth stubs ──────────────────────────────────────────
+    function doSearch() {
+      const v = document.querySelector('.search-input').value.trim();
+      if (v) alert('🔍 Searching: "' + v + '"');
+    }
+    function wishlist() { alert('❤️ Wishlist — Sign in to save items'); }
+    function signIn() {
+      const email = prompt('Enter your email to sign in:');
+      if (email) alert('✔ Signed in as ' + email);
+    }
+    function joinPlayBeat() { alert('✦ Join PlayBeat — Create your free account for exclusive deals!'); }
+
+    document.querySelector('.search-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') doSearch();
+    });
+  </script>
+</body>
+</html>

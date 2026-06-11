@@ -1,0 +1,291 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║    PLAYBEAT — ADMIN PAYMENT GATEWAY PANEL                    ║
+  ║    ADD THIS SECTION INSIDE YOUR ADMIN.HTML                   ║
+  ║    Place inside the admin sections navigation area           ║
+  ╚══════════════════════════════════════════════════════════════╝
+
+  STEP 1: Add this nav link to your admin sidebar/tabs:
+  <button onclick="showSection('payments')">💳 Payments</button>
+
+  STEP 2: Paste the section below inside your admin content area.
+-->
+
+<!-- PAYMENT GATEWAYS SECTION -->
+<div id="section-payments" class="admin-section" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+    <h2 style="font:700 20px Orbitron,sans-serif;color:var(--cyan)">💳 Payment Gateways</h2>
+    <button onclick="loadGateways()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border-mid);background:transparent;color:var(--cyan);font-size:13px;cursor:pointer">↻ Refresh</button>
+  </div>
+
+  <!-- GATEWAY CARDS -->
+  <div id="gateway-cards" style="display:grid;gap:16px"></div>
+
+  <!-- TRANSACTIONS TABLE -->
+  <div style="margin-top:32px">
+    <h3 style="font:700 16px Orbitron,sans-serif;color:var(--cyan);margin-bottom:16px">📊 Recent Transactions</h3>
+    <div style="overflow-x:auto">
+      <table id="txn-table" style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(0,212,255,.15)">
+            <th style="text-align:left;padding:10px;color:var(--text2);font-weight:600">Order</th>
+            <th style="text-align:left;padding:10px;color:var(--text2);font-weight:600">Gateway</th>
+            <th style="text-align:left;padding:10px;color:var(--text2);font-weight:600">Type</th>
+            <th style="text-align:left;padding:10px;color:var(--text2);font-weight:600">Status</th>
+            <th style="text-align:right;padding:10px;color:var(--text2);font-weight:600">Amount</th>
+            <th style="text-align:left;padding:10px;color:var(--text2);font-weight:600">Date</th>
+          </tr>
+        </thead>
+        <tbody id="txn-tbody">
+          <tr><td colspan="6" style="padding:20px;text-align:center;color:var(--text3)">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- GATEWAY CONFIG MODAL -->
+<div id="gw-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);align-items:center;justify-content:center">
+  <div style="background:linear-gradient(160deg,#0d1a2e,#091522);border:1px solid rgba(0,212,255,.25);border-radius:16px;padding:32px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <h3 id="gw-modal-title" style="font:700 18px Orbitron,sans-serif;color:var(--cyan)">Configure Gateway</h3>
+      <button onclick="closeGWModal()" style="background:rgba(255,90,90,.1);border:1px solid rgba(255,90,90,.3);color:#ff5a5a;width:32px;height:32px;border-radius:8px;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <div id="gw-modal-body"></div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button onclick="saveGateway()" style="flex:1;padding:14px;border-radius:8px;border:0;background:linear-gradient(135deg,#f5c842,#f5a623);color:#05070d;font-weight:700;font-size:14px;cursor:pointer">Save Configuration</button>
+      <button onclick="testGateway()" id="test-gw-btn" style="padding:14px 20px;border-radius:8px;border:1px solid rgba(0,212,255,.3);background:transparent;color:var(--cyan);font-size:14px;cursor:pointer">Test</button>
+    </div>
+    <div id="gw-save-msg" style="margin-top:12px;font-size:13px;text-align:center"></div>
+  </div>
+</div>
+
+<style>
+.gw-card{background:rgba(10,22,40,.9);border:1px solid rgba(0,212,255,.1);border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;transition:.2s}
+.gw-card:hover{border-color:rgba(0,212,255,.2)}
+.gw-logo{width:52px;height:36px;border-radius:8px;background:#0e1e36;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.gw-info{flex:1}
+.gw-name{font-weight:700;font-size:15px}
+.gw-meta{font-size:12px;color:var(--text2);margin-top:2px}
+.health-ok{color:var(--green)}
+.health-error{color:var(--red)}
+.health-untested{color:var(--amber)}
+.gw-toggle{position:relative;width:44px;height:24px}
+.gw-toggle input{opacity:0;width:0;height:0}
+.gw-slider{position:absolute;inset:0;background:#1a2a40;border-radius:12px;cursor:pointer;transition:.3s}
+.gw-slider::before{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;background:#4a6080;border-radius:50%;transition:.3s}
+.gw-toggle input:checked + .gw-slider{background:rgba(0,212,255,.2)}
+.gw-toggle input:checked + .gw-slider::before{background:var(--cyan);transform:translateX(20px)}
+.gw-field{margin-bottom:14px}
+.gw-field label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-family:'Share Tech Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.gw-field input,.gw-field select{width:100%;background:#0d1a2e;border:1px solid rgba(0,212,255,.2);color:var(--text);padding:10px 12px;border-radius:8px;font-size:13px;outline:none}
+.gw-field input:focus{border-color:rgba(0,212,255,.5)}
+</style>
+
+<script>
+// ── GATEWAY DEFINITIONS (display only, no secrets) ────────────────
+const GATEWAY_META = {
+  stripe:       { name:'Stripe',              emoji:'💳', desc:'Credit/Debit Cards (International)' },
+  jazzcash:     { name:'JazzCash',            emoji:'📱', desc:'Mobile Wallet — Pakistan' },
+  easypaisa:    { name:'EasyPaisa',           emoji:'💚', desc:'Mobile Wallet — Pakistan' },
+  alfalah:      { name:'Bank Alfalah',        emoji:'🏦', desc:'Online Banking — Pakistan' },
+  meezan:       { name:'Meezan Bank',         emoji:'🕌', desc:'IBAN Bank Transfer' },
+  bank_transfer:{ name:'Direct Bank Transfer',emoji:'🏛', desc:'Manual bank transfer verification' },
+};
+
+const GATEWAY_FIELDS = {
+  stripe: [
+    { key:'secretKey',       label:'Secret Key',        type:'password', placeholder:'sk_live_...' },
+    { key:'webhookSecret',   label:'Webhook Secret',    type:'password', placeholder:'whsec_...' },
+    { key:'sandbox',         label:'Sandbox Mode',      type:'checkbox' },
+  ],
+  jazzcash: [
+    { key:'merchantId',      label:'Merchant ID',       type:'text', placeholder:'JAZZCASH001' },
+    { key:'password',        label:'Password',          type:'password' },
+    { key:'hashKey',         label:'Integrity Salt (Hash Key)', type:'password' },
+    { key:'sandbox',         label:'Sandbox Mode',      type:'checkbox' },
+  ],
+  easypaisa: [
+    { key:'storeId',         label:'Store ID',          type:'text' },
+    { key:'hashKey',         label:'Hash Key',          type:'password' },
+    { key:'sandbox',         label:'Sandbox Mode',      type:'checkbox' },
+  ],
+  alfalah: [
+    { key:'channelId',       label:'Channel ID',        type:'text', placeholder:'1002' },
+    { key:'merchantId',      label:'Merchant ID',       type:'text', placeholder:'197' },
+    { key:'storeId',         label:'Store ID',          type:'text', placeholder:'000001' },
+    { key:'merchantUsername',label:'Merchant Username', type:'text' },
+    { key:'merchantPassword',label:'Merchant Password', type:'password' },
+    { key:'merchantHash',    label:'Merchant Hash',     type:'password' },
+    { key:'key1',            label:'Key 1',             type:'password' },
+    { key:'key2',            label:'Key 2',             type:'password' },
+    { key:'sandbox',         label:'Sandbox Mode',      type:'checkbox' },
+  ],
+  meezan: [
+    { key:'username',        label:'API Username',      type:'text' },
+    { key:'password',        label:'API Password',      type:'password' },
+    { key:'sandbox',         label:'Sandbox Mode',      type:'checkbox' },
+  ],
+  bank_transfer: [
+    { key:'bankName',        label:'Bank Name',         type:'text', placeholder:'Bank Alfalah' },
+    { key:'accountNumber',   label:'Account Number',    type:'text', placeholder:'00681011050474' },
+    { key:'accountTitle',    label:'Account Title',     type:'text', placeholder:'PLAYBEAT DIGITAL (PRIVATE LIMITED)' },
+  ],
+};
+
+let currentGW = null;
+
+async function loadGateways() {
+  try {
+    const r = await adminFetch('/api/admin/gateways');
+    const d = await r.json();
+    renderGatewayCards(d.gateways || []);
+  } catch (_) {
+    document.getElementById('gateway-cards').innerHTML = '<p style="color:var(--red);font-size:13px">Failed to load gateway status</p>';
+  }
+  loadTransactions();
+}
+
+function renderGatewayCards(gateways) {
+  const html = gateways.map(g => {
+    const meta   = GATEWAY_META[g.gateway] || { name: g.gateway, emoji:'💳', desc:'' };
+    const health = g.health === 'ok' ? '🟢 Connected' : g.health === 'error' ? '🔴 Error' : '🟡 Untested';
+    return `<div class="gw-card">
+      <div class="gw-logo">${meta.emoji}</div>
+      <div class="gw-info">
+        <div class="gw-name">${meta.name}</div>
+        <div class="gw-meta">${meta.desc} · <span class="health-${g.health}">${health}</span>${g.sandbox ? ' · <span style="color:var(--amber);font-size:11px">SANDBOX</span>' : ''}</div>
+      </div>
+      <label class="gw-toggle" title="${g.enabled ? 'Enabled' : 'Disabled'}">
+        <input type="checkbox" ${g.enabled ? 'checked' : ''} onchange="toggleGateway('${g.gateway}', this.checked)">
+        <span class="gw-slider"></span>
+      </label>
+      <button onclick="openGWModal('${g.gateway}')" style="padding:8px 14px;border-radius:8px;border:1px solid rgba(0,212,255,.2);background:transparent;color:var(--cyan);font-size:12px;cursor:pointer;white-space:nowrap">⚙ Configure</button>
+    </div>`;
+  }).join('');
+  document.getElementById('gateway-cards').innerHTML = html;
+}
+
+async function toggleGateway(gateway, enabled) {
+  await adminFetch(`/api/admin/gateways/${gateway}`, {
+    method:'PUT', body: JSON.stringify({ enabled })
+  });
+  showAdminToast(`${gateway} ${enabled ? 'enabled' : 'disabled'}`);
+}
+
+function openGWModal(gateway) {
+  currentGW = gateway;
+  const meta   = GATEWAY_META[gateway] || { name: gateway, emoji:'💳' };
+  const fields = GATEWAY_FIELDS[gateway] || [];
+
+  document.getElementById('gw-modal-title').textContent = `${meta.emoji} Configure ${meta.name}`;
+  document.getElementById('gw-modal-body').innerHTML = `
+    <div style="background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.15);border-radius:8px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2)">
+      🔒 Credentials are stored encrypted on the server. They are never sent to the browser or visible on the frontend.
+    </div>
+    ${fields.map(f => {
+      if (f.type === 'checkbox') return `
+        <label style="display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;font-size:13px;color:var(--text2)">
+          <input type="checkbox" id="gw-${f.key}" style="width:16px;height:16px;accent-color:var(--cyan)">
+          ${f.label}
+        </label>`;
+      return `<div class="gw-field">
+        <label>${f.label}</label>
+        <input type="${f.type}" id="gw-${f.key}" placeholder="${f.placeholder || ''}">
+      </div>`;
+    }).join('')}`;
+
+  document.getElementById('gw-modal').style.display = 'flex';
+  document.getElementById('gw-save-msg').textContent = '';
+  document.getElementById('test-gw-btn').textContent = 'Test Connection';
+}
+
+function closeGWModal() {
+  document.getElementById('gw-modal').style.display = 'none';
+  currentGW = null;
+}
+
+async function saveGateway() {
+  if (!currentGW) return;
+  const fields  = GATEWAY_FIELDS[currentGW] || [];
+  const payload = { enabled: true };
+
+  fields.forEach(f => {
+    const el = document.getElementById(`gw-${f.key}`);
+    if (!el) return;
+    payload[f.key] = f.type === 'checkbox' ? el.checked : el.value;
+  });
+
+  try {
+    const r = await adminFetch(`/api/admin/gateways/${currentGW}`, { method:'PUT', body: JSON.stringify(payload) });
+    const d = await r.json();
+    const msg = document.getElementById('gw-save-msg');
+    if (r.ok) {
+      msg.style.color = 'var(--green)';
+      msg.textContent = '✅ Configuration saved successfully';
+      setTimeout(() => { closeGWModal(); loadGateways(); }, 1500);
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = `❌ ${d.error}`;
+    }
+  } catch (_) {
+    document.getElementById('gw-save-msg').textContent = '❌ Save failed';
+  }
+}
+
+async function testGateway() {
+  if (!currentGW) return;
+  const btn = document.getElementById('test-gw-btn');
+  btn.textContent = '⏳ Testing…'; btn.disabled = true;
+  try {
+    const r = await adminFetch(`/api/admin/gateways/${currentGW}/test`, { method:'POST' });
+    const d = await r.json();
+    const msg = document.getElementById('gw-save-msg');
+    msg.style.color = d.health === 'ok' ? 'var(--green)' : 'var(--red)';
+    msg.textContent = d.health === 'ok' ? `✅ ${d.message}` : `❌ ${d.message}`;
+  } catch (_) {
+    document.getElementById('gw-save-msg').textContent = '❌ Test request failed';
+  }
+  btn.textContent = 'Test Connection'; btn.disabled = false;
+}
+
+async function loadTransactions() {
+  try {
+    const r = await adminFetch('/api/admin/transactions?limit=20');
+    const d = await r.json();
+    const tbody = document.getElementById('txn-tbody');
+    if (!d.transactions?.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--text3)">No transactions yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = d.transactions.map(t => `
+      <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+        <td style="padding:10px;color:var(--cyan)">${t.orderNumber || '—'}</td>
+        <td style="padding:10px;color:var(--text)">${t.gateway}</td>
+        <td style="padding:10px;color:var(--text2)">${t.type}</td>
+        <td style="padding:10px"><span style="padding:3px 8px;border-radius:4px;font-size:11px;background:${t.status==='success'?'rgba(34,214,138,.12)':t.status==='failed'?'rgba(255,90,90,.12)':'rgba(245,165,35,.12)'};color:${t.status==='success'?'var(--green)':t.status==='failed'?'var(--red)':'var(--amber)'}">${t.status}</span></td>
+        <td style="padding:10px;text-align:right;color:var(--gold)">PKR ${Math.round((t.amount||0)/100).toLocaleString()}</td>
+        <td style="padding:10px;color:var(--text3);font-size:12px">${new Date(t.createdAt).toLocaleDateString()}</td>
+      </tr>`).join('');
+  } catch (_) {}
+}
+
+// Helper: admin fetch with credentials
+function adminFetch(url, options = {}) {
+  return fetch(url, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  });
+}
+
+function showAdminToast(msg) {
+  // Uses existing admin toast if available, else console
+  if (typeof showToast === 'function') showToast(msg);
+  else console.log(msg);
+}
+
+// Auto-load when section becomes visible
+// Hook this into your existing showSection() function:
+// if (section === 'payments') loadGateways();
+</script>

@@ -1,0 +1,25 @@
+# render.yaml — place this at the REPO ROOT
+services:
+  - type: web
+    name: playbeat-backend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm --prefix playbeat-backend install --production --silent
+    startCommand: node playbeat-backend/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Set these in Render Dashboard — never commit secrets:
+      # MONGODB_URI, JWT_SECRET, JWT_EXPIRES_IN
+      # ADMIN_USERNAME, ADMIN_PASSWORD
+      # ALLOWED_ORIGINS
+      # STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PUBLIC_KEY
+      # JAZZCASH_MERCHANT_ID, JAZZCASH_PASSWORD, JAZZCASH_HASH_KEY, JAZZCASH_RETURN_URL
+      # EASYPAISA_STORE_ID, EASYPAISA_HASH_KEY
+      # ALFALAH_USERNAME, ALFALAH_PASSWORD, ALFALAH_HASH_KEY1, ALFALAH_HASH_KEY2
+      # ALFALAH_MERCHANT_ID, ALFALAH_STORE_ID, ALFALAH_CHANNEL_ID
+      # MEEZAN_USERNAME, MEEZAN_PASSWORD, MEEZAN_IBAN

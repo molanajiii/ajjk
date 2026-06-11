@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Checkout — PlayBeat Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#05070d;--bg2:#0a1628;--bg3:#0e1e36;
+  --border:rgba(0,212,255,.09);--border-mid:rgba(0,212,255,.2);--border-hi:rgba(0,212,255,.45);
+  --cyan:#00d4ff;--teal:#00ffcc;--gold:#f5c842;--amber:#f5a623;--purple:#7c6fff;
+  --red:#ff5a5a;--green:#22d68a;--blue:#4fa0ff;
+  --text:#e4f0ff;--text2:#6a8fb5;--text3:#2e4a6e;
+  --r:16px;--r-sm:10px;--r-xs:6px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(5,7,13,.94);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  justify-content:space-between;padding:14px 5%;gap:20px}
+.logo{font:900 22px Orbitron,sans-serif;letter-spacing:-1px}
+.logo span{color:var(--gold)}
+
+/* LAYOUT */
+.checkout-wrap{max-width:1100px;margin:0 auto;padding:40px 5%;display:grid;
+  grid-template-columns:1fr 400px;gap:32px;align-items:start}
+@media(max-width:800px){.checkout-wrap{grid-template-columns:1fr}}
+
+/* STEPS */
+.steps{display:flex;gap:0;margin-bottom:32px}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3);flex:1}
+.step.active{color:var(--cyan)}
+.step.done{color:var(--teal)}
+.step-num{width:28px;height:28px;border-radius:50%;border:2px solid currentColor;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.step.done .step-num{background:var(--teal);border-color:var(--teal);color:#05070d}
+.step.active .step-num{background:rgba(0,212,255,.15);border-color:var(--cyan)}
+.step-line{flex:1;height:1px;background:var(--border);margin:0 8px}
+
+/* PANELS */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:20px}
+.panel-title{font:700 16px Orbitron,sans-serif;color:var(--cyan);margin-bottom:20px;
+  display:flex;align-items:center;gap:8px}
+
+/* FORMS */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;
+  font-family:'Share Tech Mono',monospace;letter-spacing:.05em}
+.field input,.field select{width:100%;background:#0d1a2e;border:1px solid var(--border-mid);
+  color:var(--text);padding:12px 14px;border-radius:var(--r-sm);font-size:14px;
+  outline:none;transition:.2s}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.08)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* PAYMENT METHODS */
+.pay-grid{display:grid;gap:10px}
+.pay-method{display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border-radius:var(--r-sm);border:2px solid var(--border);cursor:pointer;transition:.2s;
+  background:rgba(255,255,255,.02)}
+.pay-method:hover{border-color:var(--border-mid)}
+.pay-method.selected{border-color:var(--cyan);background:rgba(0,212,255,.06)}
+.pay-method input[type=radio]{display:none}
+.pay-logo{width:44px;height:30px;border-radius:6px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pay-label{font-weight:600;font-size:14px}
+.pay-group-label{font:600 11px 'Share Tech Mono',monospace;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;margin:10px 0 4px}
+.pay-badge{margin-left:auto;font-size:10px;padding:3px 8px;border-radius:3px;
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan)}
+
+/* ORDER SUMMARY */
+.summary-item{display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.04)}
+.si-emoji{width:36px;height:36px;border-radius:8px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-name{font-size:13px;font-weight:600;flex:1}
+.si-price{font-size:13px;color:var(--gold);font-weight:700;white-space:nowrap}
+.si-qty{font-size:11px;color:var(--text3);margin-top:2px}
+.total-row{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;color:var(--text2)}
+.total-row.grand{font:700 18px Orbitron,sans-serif;color:var(--gold);padding-top:14px;
+  border-top:1px solid var(--border-mid);margin-top:4px}
+
+/* COUPON */
+.coupon-row{display:flex;gap:8px;margin:12px 0}
+.coupon-row input{flex:1;background:#0d1a2e;border:1px solid var(--border-mid);
+  color:var(--text);padding:10px 12px;border-radius:var(--r-sm);font-size:13px;outline:none}
+.coupon-row input:focus{border-color:var(--cyan)}
+.coupon-row button{padding:10px 16px;border-radius:var(--r-sm);border:1px solid var(--border-mid);
+  background:transparent;color:var(--cyan);font-size:13px;transition:.2s;white-space:nowrap}
+.coupon-row button:hover{border-color:var(--cyan);background:rgba(0,212,255,.06)}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:16px;border-radius:var(--r-sm);border:0;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  color:#05070d;font:700 15px 'DM Sans',sans-serif;
+  transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(245,200,66,.3)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline{padding:12px 20px;border-radius:var(--r-sm);border:1px solid var(--border-mid);
+  background:transparent;color:var(--text2);font-size:14px;transition:.2s}
+.btn-outline:hover{border-color:var(--border-hi);color:var(--text)}
+
+/* AUTH GATE */
+#auth-gate{display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(12px);
+  align-items:center;justify-content:center}
+#auth-gate.open{display:flex}
+.auth-modal{background:linear-gradient(160deg,#0d1a2e,#091522);
+  border:1px solid var(--border-mid);border-radius:20px;padding:36px;
+  width:100%;max-width:440px}
+.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.auth-tab{padding:10px 20px;font-size:13px;background:none;border:none;color:var(--text3);
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+.auth-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* BANK TRANSFER PANEL */
+.bank-info{background:#0d1a2e;border:1px solid rgba(0,255,204,.15);border-radius:var(--r-sm);padding:16px;margin:12px 0}
+.bank-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+.bank-row:last-child{border:none}
+.bank-row label{color:var(--text2)}
+.bank-row span{color:var(--teal);font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:600}
+.copy-btn{background:rgba(0,255,204,.1);border:1px solid rgba(0,255,204,.2);
+  color:var(--teal);padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer}
+
+/* SUCCESS / ERROR SCREENS */
+#success-screen,#failed-screen{display:none;flex-direction:column;align-items:center;
+  justify-content:center;min-height:70vh;text-align:center;gap:16px}
+.big-icon{font-size:80px;margin-bottom:8px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#0e1e36;border:1px solid var(--cyan);color:var(--text);
+  padding:12px 24px;border-radius:var(--r-sm);font-size:14px;
+  opacity:0;pointer-events:none;transition:.3s;z-index:999;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">PLAY<span>BEAT</span></a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="nav-user" style="font-size:13px;color:var(--text2)"></span>
+    <a href="/" class="btn-outline" style="padding:8px 16px;font-size:13px">← Continue Shopping</a>
+  </div>
+</nav>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-modal">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font:900 24px Orbitron,sans-serif;color:var(--gold)">PLAY<span style="color:var(--cyan)">BEAT</span></div>
+      <div style="color:var(--text2);font-size:14px;margin-top:6px">Sign in to complete your order</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+      <div style="text-align:right;margin:-8px 0 16px"><a href="#" onclick="showForgot()" style="font-size:12px;color:var(--cyan)">Forgot password?</a></div>
+      <button class="btn-primary" onclick="doLogin()">Sign In & Checkout →</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none">
+      <div class="field"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field"><label>Phone (optional)</label><input type="tel" id="reg-phone" placeholder="+92..."></div>
+      <div class="field"><label>Password (min 8 chars)</label><input type="password" id="reg-pass" placeholder="••••••••" autocomplete="new-password"></div>
+      <button class="btn-primary" onclick="doRegister()">Create Account & Checkout →</button>
+    </div>
+
+    <!-- FORGOT FORM -->
+    <div id="forgot-form" style="display:none">
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Enter your email to receive a password reset link.</p>
+      <div class="field"><label>Email</label><input type="email" id="forgot-email" placeholder="you@example.com"></div>
+      <button class="btn-primary" onclick="doForgot()">Send Reset Link</button>
+      <button class="btn-outline" onclick="switchTab('login')" style="width:100%;margin-top:8px">Back to Sign In</button>
+    </div>
+
+    <div id="auth-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none"></div>
+  </div>
+</div>
+
+<!-- MAIN CHECKOUT -->
+<div id="checkout-main" style="display:none">
+<div class="checkout-wrap">
+
+  <!-- LEFT COLUMN -->
+  <div>
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step done" id="step-1"><div class="step-num">✓</div><span>Account</span></div>
+      <div class="step-line"></div>
+      <div class="step active" id="step-2"><div class="step-num">2</div><span>Payment</span></div>
+      <div class="step-line"></div>
+      <div class="step" id="step-3"><div class="step-num">3</div><span>Confirm</span></div>
+    </div>
+
+    <!-- CUSTOMER INFO -->
+    <div class="panel">
+      <div class="panel-title">👤 Account</div>
+      <div id="customer-info" style="font-size:14px;color:var(--text2)">Loading...</div>
+    </div>
+
+    <!-- PAYMENT METHOD -->
+    <div class="panel">
+      <div class="panel-title">💳 Payment Method</div>
+      <div id="payment-methods-container">
+        <div style="color:var(--text2);font-size:13px">Loading payment methods...</div>
+      </div>
+    </div>
+
+    <!-- BANK TRANSFER DETAILS (shown conditionally) -->
+    <div id="bank-transfer-info" class="panel" style="display:none">
+      <div class="panel-title">🏦 Bank Transfer Details</div>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:12px">Transfer the exact amount to the account below, then submit proof.</p>
+      <div id="bank-details-content"></div>
+      <div class="field" style="margin-top:16px"><label>Your Transaction ID / Reference</label>
+        <input type="text" id="bank-txn-id" placeholder="Bank transaction reference number">
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Sender Name</label><input type="text" id="bank-sender" placeholder="Account holder name"></div>
+        <div class="field"><label>Transfer Date</label><input type="date" id="bank-date"></div>
+      </div>
+    </div>
+
+    <!-- MEEZAN IBAN (shown conditionally) -->
+    <div id="meezan-info" class="panel" style="display:none">
+      <div class="panel-title">🏦 Meezan Bank Transfer</div>
+      <div class="bank-info">
+        <div class="bank-row"><label>Bank</label><span>Meezan Bank</span></div>
+        <div class="bank-row"><label>IBAN</label>
+          <span>PK86MEZN0015040115102971
+            <button class="copy-btn" onclick="copyText('PK86MEZN0015040115102971')">Copy</button>
+          </span>
+        </div>
+        <div class="bank-row"><label>Account Title</label><span>PLAYBEAT DIGITAL PRIVATE LIMITED</span></div>
+        <div class="bank-row"><label>Amount</label><span id="meezan-amount">—</span></div>
+        <div class="bank-row"><label>Reference</label><span id="meezan-ref">—</span></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label>Transaction ID</label>
+        <input type="text" id="meezan-txn-id" placeholder="Meezan transaction reference">
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Sender Name</label><input type="text" id="meezan-sender" placeholder="Account holder name"></div>
+        <div class="field"><label>Transfer Date</label><input type="date" id="meezan-date"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMER NOTE -->
+    <div class="panel">
+      <div class="panel-title">📝 Order Note <span style="font-size:12px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400">(optional)</span></div>
+      <textarea id="customer-note" rows="3" style="width:100%;background:#0d1a2e;border:1px solid var(--border-mid);color:var(--text);padding:12px;border-radius:var(--r-sm);font-size:13px;resize:vertical;outline:none" placeholder="Any special instructions or notes..."></textarea>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN — ORDER SUMMARY -->
+  <div>
+    <div class="panel" style="position:sticky;top:80px">
+      <div class="panel-title">🛒 Order Summary</div>
+      <div id="order-items"></div>
+
+      <!-- COUPON -->
+      <div class="coupon-row">
+        <input type="text" id="coupon-input" placeholder="Coupon code" style="text-transform:uppercase">
+        <button onclick="applyCoupon()">Apply</button>
+      </div>
+      <div id="coupon-msg" style="font-size:12px;margin-top:4px"></div>
+
+      <!-- TOTALS -->
+      <div style="margin-top:16px">
+        <div class="total-row"><span>Subtotal</span><span id="sum-subtotal">PKR 0</span></div>
+        <div class="total-row" id="discount-row" style="display:none;color:var(--green)">
+          <span>Discount</span><span id="sum-discount">-PKR 0</span>
+        </div>
+        <div class="total-row grand"><span>Total</span><span id="sum-total">PKR 0</span></div>
+      </div>
+
+      <button class="btn-primary" id="place-order-btn" onclick="placeOrder()" style="margin-top:20px">
+        🔒 Place Order
+      </button>
+      <p style="text-align:center;color:var(--text3);font-size:11px;margin-top:12px">
+        🔒 Secured · 🚀 Instant Delivery · 💬 24/7 Support
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div id="success-screen" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;gap:16px;padding:40px">
+  <div style="font-size:80px">🎉</div>
+  <h2 style="font:900 32px Orbitron,sans-serif;color:var(--gold)">Order Placed!</h2>
+  <p style="color:var(--text2);font-size:16px;max-width:440px">Your order <strong id="success-order-num" style="color:var(--cyan)"></strong> has been received. We'll process your digital keys and email them shortly.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+    <a href="/account" class="btn-primary" style="width:auto;padding:14px 28px;text-decoration:none">View My Orders</a>
+    <a href="/" class="btn-outline" style="padding:14px 28px">Back to Store</a>
+  </div>
+  <p style="color:var(--text3);font-size:12px">Check your email for confirmation. Need help? <a href="https://wa.me/923318333368" style="color:var(--cyan)">WhatsApp us</a></p>
+</div>
+
+<!-- FAILED SCREEN -->
+<div id="failed-screen" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;gap:16px;padding:40px">
+  <div style="font-size:80px">❌</div>
+  <h2 style="font:900 28px Orbitron,sans-serif;color:var(--red)">Payment Failed</h2>
+  <p style="color:var(--text2)">Something went wrong with your payment. Your order has not been charged.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+    <button class="btn-primary" onclick="retryCheckout()" style="width:auto;padding:14px 28px">Try Again</button>
+    <a href="/" class="btn-outline" style="padding:14px 28px">Back to Store</a>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────
+let cart         = JSON.parse(localStorage.getItem('pb_cart') || '[]');
+let user         = null;
+let token        = localStorage.getItem('pb_token') || null;
+let payMethods   = [];
+let selectedGW   = null;
+let couponCode   = '';
+let couponDiscount = 0;
+let pendingOrder = null;
+
+// ── INIT ───────────────────────────────────────────────────────────
+(async function init() {
+  const params = new URLSearchParams(location.search);
+
+  // Handle return from payment gateway
+  if (params.get('step') === 'success') {
+    const orderNum = params.get('order') || '';
+    // Verify stripe session if present
+    const sessionId = params.get('session_id');
+    const orderId   = localStorage.getItem('pb_pending_order');
+    if (sessionId && orderId) {
+      await verifyStripePayment(sessionId, orderId);
+    }
+    showSuccess(orderNum || localStorage.getItem('pb_last_order'));
+    return;
+  }
+  if (params.get('step') === 'failed') {
+    showFailed();
+    return;
+  }
+
+  if (!cart.length) { window.location.href = '/'; return; }
+
+  // Check auth
+  user = await fetchUser();
+  if (!user) {
+    showAuthGate();
+  } else {
+    showCheckout();
+  }
+})();
+
+async function fetchUser() {
+  try {
+    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+    const r = await fetch('/api/auth/me', { headers, credentials: 'include' });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.user;
+  } catch (_) { return null; }
+}
+
+// ── AUTH GATE ──────────────────────────────────────────────────────
+function showAuthGate() {
+  document.getElementById('auth-gate').classList.add('open');
+}
+
+function hideAuthGate() {
+  document.getElementById('auth-gate').classList.remove('open');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('login-form').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('forgot-form').style.display   = tab === 'forgot'   ? '' : 'none';
+  event?.target?.classList.add('active');
+  clearAuthError();
+}
+
+function showForgot() {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('login-form').style.display    = 'none';
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('forgot-form').style.display   = '';
+}
+
+function setAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = '';
+}
+function clearAuthError() {
+  const el = document.getElementById('auth-error');
+  el.textContent = ''; el.style.display = 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) return setAuthError('Email and password required');
+  try {
+    const r = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ email, password: pass }) });
+    const d = await r.json();
+    if (!r.ok) return setAuthError(d.error || 'Login failed');
+    if (d.token) { token = d.token; localStorage.setItem('pb_token', token); }
+    user = d.user;
+    hideAuthGate();
+    showCheckout();
+  } catch (_) { setAuthError('Network error'); }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('reg-name').value;
+  const email = document.getElementById('reg-email').value;
+  const phone = document.getElementById('reg-phone').value;
+  const pass  = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) return setAuthError('Name, email, and password required');
+  try {
+    const r = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include', body: JSON.stringify({ name, email, phone, password: pass }) });
+    const d = await r.json();
+    if (!r.ok) return setAuthError(d.error || 'Registration failed');
+    if (d.token) { token = d.token; localStorage.setItem('pb_token', token); }
+    user = d.user;
+    hideAuthGate();
+    showCheckout();
+    showToast('✅ Account created! Please verify your email.');
+  } catch (_) { setAuthError('Network error'); }
+}
+
+async function doForgot() {
+  const email = document.getElementById('forgot-email').value;
+  if (!email) return setAuthError('Email required');
+  try {
+    const r = await fetch('/api/auth/forgot-password', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+    const d = await r.json();
+    showToast(d.message || 'Reset link sent');
+    switchTab('login');
+  } catch (_) { setAuthError('Network error'); }
+}
+
+// ── CHECKOUT ───────────────────────────────────────────────────────
+async function showCheckout() {
+  document.getElementById('checkout-main').style.display = '';
+
+  // Customer info
+  document.getElementById('nav-user').textContent = `👤 ${user.name}`;
+  document.getElementById('customer-info').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="color:var(--text);font-weight:600">${user.name}</div>
+        <div style="font-size:12px;margin-top:2px">${user.email}</div>
+      </div>
+      ${!user.emailVerified ? `<span style="background:rgba(245,165,35,.12);border:1px solid rgba(245,165,35,.3);color:var(--amber);font-size:11px;padding:4px 10px;border-radius:4px">⚠ Email not verified</span>` : `<span style="background:rgba(34,214,138,.1);border:1px solid rgba(34,214,138,.2);color:var(--green);font-size:11px;padding:4px 10px;border-radius:4px">✓ Verified</span>`}
+    </div>`;
+
+  renderOrderSummary();
+  await loadPaymentMethods();
+}
+
+function renderOrderSummary() {
+  const getCatEmoji = c => ({'ai-tools':'🤖','games':'🎮','subscriptions':'📺','software':'💻','gift-cards':'🎁','top-up':'💎'}[c] || '📦');
+  document.getElementById('order-items').innerHTML = cart.map(i => `
+    <div class="summary-item">
+      <div class="si-emoji">${getCatEmoji(i.category)}</div>
+      <div style="flex:1"><div class="si-name">${i.name}</div><div class="si-qty">Qty: ${i.qty}</div></div>
+      <div class="si-price">PKR ${(i.price * i.qty).toLocaleString()}</div>
+    </div>`).join('');
+  updateTotals();
+}
+
+function updateTotals() {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total    = Math.max(subtotal - couponDiscount, 0);
+  document.getElementById('sum-subtotal').textContent = `PKR ${subtotal.toLocaleString()}`;
+  document.getElementById('sum-total').textContent    = `PKR ${total.toLocaleString()}`;
+  if (couponDiscount > 0) {
+    document.getElementById('discount-row').style.display = '';
+    document.getElementById('sum-discount').textContent = `-PKR ${couponDiscount.toLocaleString()}`;
+  } else {
+    document.getElementById('discount-row').style.display = 'none';
+  }
+}
+
+async function loadPaymentMethods() {
+  try {
+    const r    = await fetch('/api/payments/methods');
+    const data = await r.json();
+    payMethods = data.methods || [];
+    renderPaymentMethods();
+  } catch (_) {
+    document.getElementById('payment-methods-container').innerHTML = '<p style="color:var(--red);font-size:13px">Failed to load payment methods</p>';
+  }
+}
+
+function renderPaymentMethods() {
+  const local = payMethods.filter(m => m.group === 'local');
+  const intl  = payMethods.filter(m => m.group === 'international');
+
+  let html = '';
+
+  if (intl.length) {
+    html += `<div class="pay-group-label">🌍 International</div><div class="pay-grid">`;
+    html += intl.map(m => methodHTML(m)).join('');
+    html += '</div>';
+  }
+  if (local.length) {
+    html += `<div class="pay-group-label">🇵🇰 Local Payments</div><div class="pay-grid">`;
+    html += local.map(m => methodHTML(m)).join('');
+    html += '</div>';
+  }
+
+  document.getElementById('payment-methods-container').innerHTML = html || '<p style="color:var(--text2);font-size:13px">No payment methods available</p>';
+
+  // Auto-select first
+  if (payMethods.length) selectPayment(payMethods[0].id);
+}
+
+function methodHTML(m) {
+  const logoMap = {
+    stripe:        '💳',
+    jazzcash:      '📱',
+    easypaisa:     '💚',
+    alfalah:       '🏦',
+    meezan:        '🕌',
+    bank_transfer: '🏛',
+  };
+  return `<label class="pay-method" id="pm-${m.id}" onclick="selectPayment('${m.id}')">
+    <input type="radio" name="payment" value="${m.id}">
+    <div class="pay-logo">${logoMap[m.id] || '💳'}</div>
+    <div>
+      <div class="pay-label">${m.label}</div>
+      ${m.id === 'stripe' ? '<div style="font-size:11px;color:var(--text3)">Visa · Mastercard · Amex</div>' : ''}
+    </div>
+    ${m.id === 'stripe' ? '<span class="pay-badge">Secure</span>' : ''}
+  </label>`;
+}
+
+function selectPayment(gw) {
+  selectedGW = gw;
+  document.querySelectorAll('.pay-method').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById(`pm-${gw}`);
+  if (el) el.classList.add('selected');
+
+  // Show/hide bank info panels
+  document.getElementById('bank-transfer-info').style.display = gw === 'bank_transfer' ? '' : 'none';
+  document.getElementById('meezan-info').style.display         = gw === 'meezan'        ? '' : 'none';
+
+  if (gw === 'meezan' || gw === 'bank_transfer') {
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0) - couponDiscount;
+    document.getElementById('meezan-amount').textContent = `PKR ${total.toLocaleString()}`;
+    document.getElementById('meezan-ref').textContent    = `Your order number (given after placing)`;
+  }
+}
+
+// ── COUPON ─────────────────────────────────────────────────────────
+async function applyCoupon() {
+  const code  = document.getElementById('coupon-input').value.trim();
+  const total = cart.reduce((s,i) => s+i.price*i.qty, 0);
+  if (!code) return;
+  try {
+    const headers = token ? {'Content-Type':'application/json','Authorization':`Bearer ${token}`} : {'Content-Type':'application/json'};
+    const r = await fetch('/api/payments/validate-coupon', { method:'POST', headers, credentials:'include', body: JSON.stringify({ code, total }) });
+    const d = await r.json();
+    const msg = document.getElementById('coupon-msg');
+    if (d.valid) {
+      couponCode     = code;
+      couponDiscount = d.discount;
+      msg.style.color = 'var(--green)';
+      msg.textContent = `✅ Coupon applied — saving PKR ${d.discount.toLocaleString()}`;
+      updateTotals();
+    } else {
+      couponCode     = '';
+      couponDiscount = 0;
+      msg.style.color = 'var(--red)';
+      msg.textContent = `❌ ${d.message}`;
+      updateTotals();
+    }
+  } catch (_) { showToast('❌ Coupon check failed'); }
+}
+
+// ── PLACE ORDER ────────────────────────────────────────────────────
+async function placeOrder() {
+  if (!selectedGW) return showToast('❌ Select a payment method');
+  if (!cart.length) return showToast('❌ Cart is empty');
+
+  const btn = document.getElementById('place-order-btn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Processing…';
+
+  try {
+    const headers = { 'Content-Type':'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const body = {
+      items: cart.map(i => ({ productId: i.id, qty: i.qty })),
+      paymentMethod: selectedGW,
+      couponCode:    couponCode || undefined,
+      customerNote:  document.getElementById('customer-note').value,
+    };
+
+    const r = await fetch('/api/orders', { method:'POST', headers, credentials:'include', body: JSON.stringify(body) });
+    const d = await r.json();
+
+    if (!r.ok) {
+      showToast(`❌ ${d.error || 'Order failed'}`);
+      btn.disabled = false; btn.innerHTML = '🔒 Place Order';
+      return;
+    }
+
+    const { orderId, orderNumber, paymentData } = d;
+    localStorage.setItem('pb_pending_order', orderId);
+    localStorage.setItem('pb_last_order', orderNumber);
+
+    // ── STRIPE: redirect to Stripe Checkout ──────────────
+    if (selectedGW === 'stripe' && paymentData.sessionUrl) {
+      window.location.href = paymentData.sessionUrl;
+      return;
+    }
+
+    // ── JAZZCASH / EASYPAISA: auto-submit form ────────────
+    if ((selectedGW === 'jazzcash' || selectedGW === 'easypaisa') && paymentData.apiUrl) {
+      submitGatewayForm(paymentData.apiUrl, paymentData.payload);
+      return;
+    }
+
+    // ── BANK / MEEZAN: submit proof ───────────────────────
+    if (selectedGW === 'bank_transfer' || selectedGW === 'meezan') {
+      const txnId  = document.getElementById(selectedGW === 'meezan' ? 'meezan-txn-id' : 'bank-txn-id')?.value;
+      const sender = document.getElementById(selectedGW === 'meezan' ? 'meezan-sender' : 'bank-sender')?.value;
+      const date   = document.getElementById(selectedGW === 'meezan' ? 'meezan-date'   : 'bank-date')?.value;
+
+      if (!txnId) { showToast('❌ Enter your transaction ID'); btn.disabled=false; btn.innerHTML='🔒 Place Order'; return; }
+
+      await fetch('/api/payments/bank-proof', {
+        method:'POST', headers, credentials:'include',
+        body: JSON.stringify({ orderId, transactionId: txnId, senderName: sender, transferDate: date }),
+      });
+
+      clearCart();
+      showSuccess(orderNumber);
+      return;
+    }
+
+    // ALFALAH
+    if (selectedGW === 'alfalah' && paymentData.apiUrl) {
+      // Alfalah needs an encrypted token request — open in redirect
+      submitGatewayForm(paymentData.apiUrl, paymentData.requestData);
+      return;
+    }
+
+    // Generic fallback
+    clearCart();
+    showSuccess(orderNumber);
+
+  } catch (err) {
+    showToast('❌ Network error. Please try again.');
+    btn.disabled = false; btn.innerHTML = '🔒 Place Order';
+  }
+}
+
+function submitGatewayForm(action, fields) {
+  const form = document.createElement('form');
+  form.method = 'POST'; form.action = action;
+  Object.entries(fields).forEach(([k,v]) => {
+    const inp = document.createElement('input');
+    inp.type = 'hidden'; inp.name = k; inp.value = v;
+    form.appendChild(inp);
+  });
+  document.body.appendChild(form);
+  form.submit();
+}
+
+async function verifyStripePayment(sessionId, orderId) {
+  try {
+    const headers = { 'Content-Type':'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    await fetch('/api/payments/stripe/verify', { method:'POST', headers, credentials:'include', body: JSON.stringify({ sessionId, orderId }) });
+  } catch (_) {}
+}
+
+// ── SCREENS ────────────────────────────────────────────────────────
+function showSuccess(orderNum) {
+  document.getElementById('checkout-main').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'flex';
+  document.getElementById('success-order-num').textContent = orderNum || '';
+  clearCart();
+}
+
+function showFailed() {
+  document.getElementById('checkout-main').style.display = 'none';
+  document.getElementById('failed-screen').style.display = 'flex';
+}
+
+function retryCheckout() {
+  document.getElementById('failed-screen').style.display = 'none';
+  document.getElementById('checkout-main').style.display = '';
+}
+
+function clearCart() {
+  localStorage.removeItem('pb_cart');
+  localStorage.removeItem('pb_pending_order');
+  cart = [];
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('✅ Copied!'));
+}
+
+let _toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+document.getElementById('coupon-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') applyCoupon();
+});
+</script>
+</body>
+</html>
