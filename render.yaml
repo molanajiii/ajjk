@@ -1,3 +1,20 @@
+services:
+  - type: web
+    name: ajjk
+    env: node
+    root: .
+    plan: free
+    buildCommand: yarn install
+    startCommand: yarn start
+    envVars:
+      - key: MONGODB_URI
+        value: CHANGE_ME
+      - key: SESSION_SECRET
+        value: CHANGE_ME
+      - key: ALLOWED_ORIGINS
+        value: https://front-wine-seven-35.vercel.app,https://ajjk.onrender.com
+      - key: NODE_ENV
+        value: production
 # render.yaml — place this at the REPO ROOT
 services:
   - type: web
